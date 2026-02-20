@@ -40,6 +40,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()   // ⭐ CRITICAL
                         .requestMatchers("/news/general/**").permitAll()
                         .requestMatchers("/weather/chicago").permitAll()
+                        .requestMatchers("/api/news/**").authenticated() // news endpoints need token
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/user/**").hasRole("USER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")

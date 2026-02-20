@@ -112,8 +112,8 @@ const News = () => {
   /*     Fetch News   */
   useEffect(() => {
     const fetchNews = async () => {
-      try {
-        const url = `https://gnews.io/api/v4/top-headlines?category=${selectedCategory}&lang=en&country=us&apikey=e594a198a130f391ac23bccfbced3fa8`;
+      try {https://gnews.io/api/v4/top-headlines?category=${selectedCategory}&lang=en&country=us&apikey=e594a198a130f391ac23bccfbced3fa8`;
+        const url = `
 
         //const response = await fetch(`/.netlify/functions/getNews?category=${selectedCategory}`);
 
