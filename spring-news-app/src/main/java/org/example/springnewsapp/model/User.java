@@ -1,6 +1,7 @@
 package org.example.springnewsapp.model;
 
 import jakarta.persistence.*;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -26,14 +27,7 @@ public class User {
     public User() {
     }
 
-    public User(String email, String password, String fullName, String city, String country, Set<Role> roles) {
-        this.email = email;
-        this.password = password;
-        this.fullName = fullName;
-        this.city = city;
-        this.country = country;
-        this.roles = roles;
-    }
+
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -42,6 +36,17 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
+
+
+
+    public User(String email, String password, String fullName, String city, String country) {
+        this.email = email;
+        this.password = password;
+        this.fullName = fullName;
+        this.city = city;
+        this.country = country;
+    }
+
 
     public Long getId() {
         return id;
