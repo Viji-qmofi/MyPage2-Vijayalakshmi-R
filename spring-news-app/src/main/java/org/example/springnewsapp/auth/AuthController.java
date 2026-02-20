@@ -3,6 +3,8 @@ package org.example.springnewsapp.auth;
 
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,10 +25,25 @@ public class AuthController {
         return ResponseEntity.ok("User registered successfully");
     }
 
+    @PutMapping("/make-admin/{email}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> makeAdmin(@PathVariable String email) {
+        authService.makeAdmin(email);
+        return ResponseEntity.ok("User promoted to ADMIN");
+    }
+
+
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
         return ResponseEntity.ok(authService.login(request));
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> me() {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        return ResponseEntity.ok(auth);
+    }
+
 }
 
 

@@ -3,12 +3,17 @@ package org.example.springnewsapp.security.jwt;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.example.springnewsapp.model.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtUtil {
@@ -20,15 +25,21 @@ public class JwtUtil {
     // Token validity: 24 hours
     private final long JWT_EXPIRATION = 60 * 60 * 1000;
 
-    // Generate token for given email
-    public String generateToken(String email) {
+    public String generateToken(User user) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("roles", user.getRoles().stream()
+                .map(r -> r.getRoleName().name()) // ROLE_USER, ROLE_ADMIN
+                .collect(Collectors.toList()));
         return Jwts.builder()
-                .setSubject(email)          // subject = email
+                .setClaims(claims)
+                .setSubject(user.getEmail())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
+
+
 
     // Extract email (subject) from token
     public String extractUsername(String token) {
@@ -60,4 +71,14 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
+    public String extractRole(String token) {
+        return extractClaim(token, claims -> claims.get("role", String.class));
+    }
+
+    public List<String> extractRoles(String token) {
+        return extractClaim(token, claims -> claims.get("roles", List.class));
+    }
+
+
 }

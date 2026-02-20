@@ -57,6 +57,18 @@ public class AuthService {
         userRepository.save(user);
     }
 
+    public void makeAdmin(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Role adminRole = roleRepo.findByRoleName(RoleType.ROLE_ADMIN)
+                .orElseThrow(() -> new RuntimeException("ROLE_ADMIN not found"));
+
+        user.addRole(adminRole);
+        userRepository.save(user);
+    }
+
+
     // Login using AuthenticationManager
     public AuthResponse login(AuthRequest request) {
         try {
@@ -74,7 +86,7 @@ public class AuthService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found after authentication"));
 
-        String token = jwtUtil.generateToken(user.getEmail());
+        String token = jwtUtil.generateToken(user);
 
         return new AuthResponse(
                 token,
