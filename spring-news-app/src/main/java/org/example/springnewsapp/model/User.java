@@ -1,9 +1,11 @@
 package org.example.springnewsapp.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.jspecify.annotations.Nullable;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -23,6 +25,11 @@ public class User {
     private String fullName;
     private String city;
     private String country;
+
+    @OneToMany(mappedBy = "user")
+    @JsonManagedReference
+    private List<Bookmark> bookmarks;
+
 
     public User() {
     }
