@@ -38,9 +38,8 @@ public class SecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()   // CRITICAL
-                        .requestMatchers("/news/general/**").permitAll()
-                        .requestMatchers("/weather/chicago").permitAll()
-                        .requestMatchers("/api/news/**").authenticated() // news endpoints need token
+                        .requestMatchers("/api/weather/**").permitAll()
+                        .requestMatchers("/api/news/**").permitAll() // news endpoints need token
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/user/**").hasRole("USER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")

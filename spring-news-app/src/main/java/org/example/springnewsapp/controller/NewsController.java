@@ -1,13 +1,18 @@
 package org.example.springnewsapp.controller;
 
 import org.example.springnewsapp.service.NewsService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api/news")
 public class NewsController {
 
     private final NewsService newsService;
@@ -16,14 +21,24 @@ public class NewsController {
         this.newsService = newsService;
     }
 
-    /** GET /api/news?category=technology */
-    @GetMapping("/api/news")
-    public Map<String, Object> getTopHeadlines(@RequestParam String category) {
-        return newsService.getTopHeadlines(category);
+    /** GET /api/news/top?category=technology */
+    @GetMapping("/top")
+    public ResponseEntity<?> getTopHeadlines(
+            @RequestParam(required = false, defaultValue = "general") String category,
+            Authentication authentication) {
+
+        boolean isGuest = (authentication == null || !authentication.isAuthenticated());
+
+        if (isGuest && !"general".equalsIgnoreCase(category)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Guests can only access general news");
+        }
+
+        return ResponseEntity.ok(newsService.getTopHeadlines(category));
     }
 
     /** GET /api/news/search?query=AI&lang=en&country=us */
-    @GetMapping("/api/news/search")
+    @GetMapping("/search")
     public Map<String, Object> searchNews(@RequestParam String query,
                                           @RequestParam(required = false) String lang,
                                           @RequestParam(required = false) String country) {

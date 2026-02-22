@@ -13,11 +13,7 @@ public class NewsService {
     private final WebClient webClient;
     private final String gnewsApiKey;
 
-    /*public NewsService(WebClient.Builder webClientBuilder,
-                       @Value("${gnews.api.key}") String gnewsApiKey) {
-        this.webClient = webClientBuilder.baseUrl("https://gnews.io/api/v4").build();
-        this.gnewsApiKey = gnewsApiKey;
-    }*/
+
     public NewsService(WebClient.Builder webClientBuilder,
                        @Value("${gnews.api.key:}") String gnewsApiKey) { // default empty
         if (gnewsApiKey.isEmpty()) {
