@@ -1,22 +1,22 @@
 package org.example.springnewsapp.repository;
 
 import org.example.springnewsapp.model.Bookmark;
-import org.example.springnewsapp.model.User;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
-@Repository
 public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
 
-    List<Bookmark> findByUserEmail(String email);
+    Optional<Bookmark> findByUser_EmailAndUrl(String email, String url);
 
-    List<Bookmark> findByUser(User user);
+    List<Bookmark> findByUser_Email(String email);
 
-    Optional<Bookmark> findByUserEmailAndUrl(String email, String url);
+    Page<Bookmark> findByUser_Email(String email, Pageable pageable);
 
-    void deleteByUserEmailAndUrl(String email, String url);
+    void deleteByUser_EmailAndUrl(String email, String url);
+
+    void deleteByUser_Email(String email);
 }
-

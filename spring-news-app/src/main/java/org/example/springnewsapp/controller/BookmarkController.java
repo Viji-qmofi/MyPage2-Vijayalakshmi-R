@@ -1,12 +1,14 @@
 package org.example.springnewsapp.controller;
 
+import jakarta.transaction.Transactional;
+import org.example.springnewsapp.dto.ApiResponse;
 import org.example.springnewsapp.dto.ArticleDto;
 import org.example.springnewsapp.dto.BookmarkRequest;
 import org.example.springnewsapp.model.Bookmark;
-import org.example.springnewsapp.model.User;
-import org.example.springnewsapp.repository.BookmarkRepository;
-import org.example.springnewsapp.repository.UserRepository;
 import org.example.springnewsapp.security.util.SecurityUtil;
+import org.example.springnewsapp.service.BookmarkService;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,34 +19,21 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/bookmarks")
 public class BookmarkController {
 
-    private final BookmarkRepository bookmarkRepository;
-    private final UserRepository userRepository;
+    private final BookmarkService bookmarkService;
 
-    public BookmarkController(BookmarkRepository bookmarkRepository, UserRepository userRepository) {
-        this.bookmarkRepository = bookmarkRepository;
-        this.userRepository = userRepository;
+    public BookmarkController(BookmarkService bookmarkService) {
+        this.bookmarkService = bookmarkService;
     }
 
     // ------------------ Add a bookmark ------------------
-    @PostMapping
-    public ResponseEntity<ArticleDto> addBookmark(@RequestBody BookmarkRequest request) {
+    @PostMapping("/add")
+    public ResponseEntity<ApiResponse<ArticleDto>> addBookmark(@RequestBody BookmarkRequest request) {
         String email = SecurityUtil.getCurrentUserEmail();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        Bookmark bookmark = new Bookmark(
-                request.getTitle(),
-                request.getDescription(),
-                request.getContent(),
-                request.getUrl(),
-                request.getImage(),
-                request.getSource(),
-                request.getPublishedAt(),
-                user
-        );
+        // Save bookmark
+        Bookmark saved = bookmarkService.addBookmarkAndReturn(request, email);
 
-        Bookmark saved = bookmarkRepository.save(bookmark);
-
+        // Convert to DTO
         ArticleDto dto = new ArticleDto(
                 saved.getId(),
                 saved.getTitle(),
@@ -54,21 +43,23 @@ public class BookmarkController {
                 saved.getImage(),
                 saved.getSource(),
                 saved.getPublishedAt(),
-                user.getEmail()
+                saved.getUser().getEmail()
         );
 
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ApiResponse<>("Bookmark added successfully", dto));
     }
 
-    // ------------------ Get all bookmarks for current user ------------------
-    @GetMapping
-    public ResponseEntity<List<ArticleDto>> getBookmarks() {
+    // ------------------ Get bookmarks (paginated) ------------------
+    @GetMapping("/get")
+    public ResponseEntity<ApiResponse<List<ArticleDto>>> getBookmarks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
         String email = SecurityUtil.getCurrentUserEmail();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        Page<Bookmark> bookmarksPage = bookmarkService.getBookmarks(email, page, size);
 
-        List<ArticleDto> articles = bookmarkRepository.findByUser(user)
-                .stream()
+        List<ArticleDto> bookmarks = bookmarksPage.getContent().stream()
                 .map(b -> new ArticleDto(
                         b.getId(),
                         b.getTitle(),
@@ -78,17 +69,29 @@ public class BookmarkController {
                         b.getImage(),
                         b.getSource(),
                         b.getPublishedAt(),
-                        user.getEmail()
+                        b.getUser().getEmail()
                 ))
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(articles);
+        return ResponseEntity.ok(
+                new ApiResponse<>("Bookmarks fetched successfully", bookmarks)
+        );
     }
 
-    // ------------------ Delete a bookmark ------------------
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBookmark(@PathVariable Long id) {
-        bookmarkRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+    // ------------------ Delete a single bookmark ------------------
+    @DeleteMapping("/delete")
+    public ResponseEntity<ApiResponse<Void>> deleteBookmark(@RequestParam String url) {
+        String email = SecurityUtil.getCurrentUserEmail();
+        bookmarkService.deleteBookmark(email, url);
+        return ResponseEntity.ok(new ApiResponse<>("Bookmark deleted successfully"));
+    }
+
+    // ------------------ Delete all bookmarks ------------------
+    @DeleteMapping("/delete-all")
+    @Transactional
+    public ResponseEntity<ApiResponse<Void>> deleteAllBookmarks() {
+        String email = SecurityUtil.getCurrentUserEmail();
+        bookmarkService.deleteAllBookmarks(email);
+        return ResponseEntity.ok(new ApiResponse<>("All bookmarks deleted successfully"));
     }
 }
