@@ -1,11 +1,18 @@
 package org.example.springnewsapp.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class BookmarkRequest {
 
+    @NotBlank(message = "Title is required")
     private String title;
+
     private String description;
     private String content;
+
+    @NotBlank(message = "URL is required")
     private String url;
+
     private String image;
     private String source;
     private String publishedAt;
