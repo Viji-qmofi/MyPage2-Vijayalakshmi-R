@@ -78,4 +78,13 @@ public class WeatherService {
             return new WeatherResponse(cityName, temp, description, icon, timezone, null);
 
     }
+
+    public void updatePreferredCity(String email, String city) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setCity(city);
+        userRepository.save(user);
+    }
 }
