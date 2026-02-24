@@ -1,24 +1,38 @@
 package org.example.springnewsapp.exception;
 
+import org.example.springnewsapp.dto.ApiResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    // Handle generic runtime exceptions
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<?> handle(RuntimeException ex) {
-        return ResponseEntity.badRequest().body(ex.getMessage());
+    protected ResponseEntity<ApiResponse<String>> handleRuntime(RuntimeException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ApiResponse<>(ex.getMessage(), null));
+    }
+    // Handle validation errors
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    protected ResponseEntity<ApiResponse<Map<String, String>>> handleValidation(
+            MethodArgumentNotValidException ex) {
+
+        Map<String, String> errors = new HashMap<>();
+        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+            errors.put(error.getField(), error.getDefaultMessage());
+        }
+
+        return ResponseEntity.badRequest()
+                .body(new ApiResponse<>("Validation failed", errors));
     }
 
-    @ExceptionHandler(CityNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleCityNotFound(CityNotFoundException ex) {
-        return ResponseEntity
-                .status(404)
-                .body(Map.of("error", ex.getMessage()));
-    }
 }
 
