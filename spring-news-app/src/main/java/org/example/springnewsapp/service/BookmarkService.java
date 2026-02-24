@@ -5,9 +5,13 @@ import org.example.springnewsapp.model.Bookmark;
 import org.example.springnewsapp.model.User;
 import org.example.springnewsapp.repository.BookmarkRepository;
 import org.example.springnewsapp.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookmarkService {
@@ -21,10 +25,11 @@ public class BookmarkService {
         this.userRepository = userRepository;
     }
 
-    public void addBookmark(BookmarkRequest request, String email) {
-
-        if (bookmarkRepository.findByUserEmailAndUrl(email, request.getUrl()).isPresent()) {
-            return;
+    // ------------------ Add bookmark and return it ------------------
+    public Bookmark addBookmarkAndReturn(BookmarkRequest request, String email) {
+        Optional<Bookmark> existing = bookmarkRepository.findByUser_EmailAndUrl(email, request.getUrl());
+        if (existing.isPresent()) {
+            return existing.get(); // return existing bookmark if already exists
         }
 
         User user = userRepository.findByEmail(email)
@@ -40,15 +45,22 @@ public class BookmarkService {
         bookmark.setPublishedAt(request.getPublishedAt());
         bookmark.setUser(user);
 
-        bookmarkRepository.save(bookmark);
+        return bookmarkRepository.save(bookmark);
     }
 
-    public List<Bookmark> getBookmarks(String email) {
-        return bookmarkRepository.findByUserEmail(email);
+    // ------------------ Get bookmarks with pagination ------------------
+    public Page<Bookmark> getBookmarks(String email, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("publishedAt").descending());
+        return bookmarkRepository.findByUser_Email(email, pageable);
     }
 
+    // ------------------ Delete a single bookmark ------------------
     public void deleteBookmark(String email, String url) {
-        bookmarkRepository.deleteByUserEmailAndUrl(email, url);
+        bookmarkRepository.deleteByUser_EmailAndUrl(email, url);
+    }
+
+    // ------------------ Delete all bookmarks ------------------
+    public void deleteAllBookmarks(String email) {
+        bookmarkRepository.deleteByUser_Email(email);
     }
 }
-

@@ -1,5 +1,6 @@
 package org.example.springnewsapp.controller;
 
+import jakarta.transaction.Transactional;
 import org.example.springnewsapp.dto.ApiResponse;
 import org.example.springnewsapp.dto.WeatherHistoryResponse;
 import org.example.springnewsapp.model.User;
@@ -29,16 +30,36 @@ public class WeatherHistoryController {
     @GetMapping
     public ResponseEntity<ApiResponse<List<WeatherHistoryResponse>>> getHistory() {
         String email = SecurityUtil.getCurrentUserEmail();
+
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         List<WeatherHistoryResponse> history = historyRepository
-                .findByUserIdOrderBySearchedAtDesc(user.getId())
+                .findTop5ByUserIdOrderBySearchedAtDesc(user.getId())
                 .stream()
                 .map(h -> new WeatherHistoryResponse(h.getId(), h.getCity(), h.getSearchedAt()))
                 .toList();
 
-        return ResponseEntity.ok(new ApiResponse<>("Weather history fetched successfully", history));
+        return ResponseEntity.ok(
+                new ApiResponse<>("Weather history fetched successfully", history)
+        );
+    }
+
+    //Delete all history items
+    @DeleteMapping
+    @Transactional
+    public ResponseEntity<ApiResponse<Void>> clearAll() {
+
+        String email = SecurityUtil.getCurrentUserEmail();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        historyRepository.deleteByUserId(user.getId());
+
+        return ResponseEntity.ok(
+                new ApiResponse<>("All weather history cleared successfully")
+        );
     }
 
     // DELETE history item
@@ -52,4 +73,5 @@ public class WeatherHistoryController {
         historyRepository.deleteById(id);
         return ResponseEntity.ok(new ApiResponse<>("History item deleted successfully"));
     }
+
 }

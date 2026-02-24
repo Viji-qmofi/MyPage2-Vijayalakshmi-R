@@ -41,10 +41,19 @@ public class WeatherService {
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
-            WeatherSearchHistory history =
-                    new WeatherSearchHistory(city, LocalDateTime.now(), user);
+        WeatherSearchHistory history =
+                new WeatherSearchHistory(city, LocalDateTime.now(), user);
 
-            historyRepository.save(history);
+        historyRepository.save(history);
+
+// ✅ keep only last 5 searches
+        List<WeatherSearchHistory> list =
+                historyRepository.findByUserIdOrderBySearchedAtDesc(user.getId());
+
+        if (list.size() > 5) {
+            List<WeatherSearchHistory> toDelete = list.subList(5, list.size());
+            historyRepository.deleteAll(toDelete);
+        }
 
             String url = "https://api.openweathermap.org/data/2.5/weather?q="
                     + city + "&appid=" + apiKey + "&units=imperial";
@@ -77,5 +86,14 @@ public class WeatherService {
 
             return new WeatherResponse(cityName, temp, description, icon, timezone, null);
 
+    }
+
+    public void updatePreferredCity(String email, String city) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setCity(city);
+        userRepository.save(user);
     }
 }
