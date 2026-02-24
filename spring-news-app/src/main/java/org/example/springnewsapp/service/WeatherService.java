@@ -1,10 +1,16 @@
 package org.example.springnewsapp.service;
 
 import org.example.springnewsapp.dto.WeatherResponse;
+import org.example.springnewsapp.model.User;
+import org.example.springnewsapp.model.WeatherSearchHistory;
+import org.example.springnewsapp.repository.UserRepository;
+import org.example.springnewsapp.repository.WeatherSearchHistoryRepository;
+import org.example.springnewsapp.security.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -14,10 +20,31 @@ public class WeatherService {
     @Value("${weather.api.key}")
     private String apiKey;
 
+    private final UserRepository userRepository;
+    private final WeatherSearchHistoryRepository historyRepository;
+
+    public WeatherService(UserRepository userRepository,
+                          WeatherSearchHistoryRepository historyRepository) {
+        this.userRepository = userRepository;
+        this.historyRepository = historyRepository;
+    }
+
+
+
     private final RestTemplate restTemplate = new RestTemplate();
 
     @SuppressWarnings("unchecked")
     public WeatherResponse getWeather(String city) {
+
+            String email = SecurityUtil.getCurrentUserEmail();
+
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            WeatherSearchHistory history =
+                    new WeatherSearchHistory(city, LocalDateTime.now(), user);
+
+            historyRepository.save(history);
 
             String url = "https://api.openweathermap.org/data/2.5/weather?q="
                     + city + "&appid=" + apiKey + "&units=imperial";

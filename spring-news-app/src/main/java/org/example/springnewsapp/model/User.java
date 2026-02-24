@@ -30,11 +30,8 @@ public class User {
     @JsonManagedReference
     private List<Bookmark> bookmarks;
 
-
-    public User() {
-    }
-
-
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WeatherSearchHistory> weatherHistory;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -43,6 +40,10 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
+
+
+    public User() {
+    }
 
 
 

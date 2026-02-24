@@ -20,7 +20,7 @@ public class JwtUtil {
 
     // Inject from application.properties / environment variable
     @Value("${jwt.secret}")
-    private  String SECRET_KEY;
+    private  String SECRET_KEY; //Keys.hmacshawKeyFor(SECRET.getBytes());
 
     // Token validity: 24 hours
     private final long JWT_EXPIRATION = 60 * 60 * 1000;
