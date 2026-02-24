@@ -1,10 +1,23 @@
 package org.example.springnewsapp.auth;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 public class RegisterRequest {
 
+    @Email(message = "Invalid email")
+    @NotBlank(message = "Email required")
     private String email;
+
+    @NotBlank(message = "Password required")
+    @Size(min = 6, message = "Password must be at least 6 characters")
     private String password;
+
+
     private String fullName;
+
+    @NotBlank(message = "City is required")
     private String city;
     private String country;
 

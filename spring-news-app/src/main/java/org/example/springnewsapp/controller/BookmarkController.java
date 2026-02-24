@@ -1,6 +1,7 @@
 package org.example.springnewsapp.controller;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.example.springnewsapp.dto.ApiResponse;
 import org.example.springnewsapp.dto.ArticleDto;
 import org.example.springnewsapp.dto.BookmarkRequest;
@@ -27,7 +28,7 @@ public class BookmarkController {
 
     // ------------------ Add a bookmark ------------------
     @PostMapping("/add")
-    public ResponseEntity<ApiResponse<ArticleDto>> addBookmark(@RequestBody BookmarkRequest request) {
+    public ResponseEntity<ApiResponse<ArticleDto>> addBookmark(@Valid @RequestBody BookmarkRequest request) {
         String email = SecurityUtil.getCurrentUserEmail();
 
         // Save bookmark
