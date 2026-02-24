@@ -4,9 +4,12 @@ import org.example.springnewsapp.dto.WeatherResponse;
 import org.example.springnewsapp.model.User;
 import org.example.springnewsapp.repository.UserRepository;
 import org.example.springnewsapp.security.util.SecurityUtil;
+import org.example.springnewsapp.service.UserService;
 import org.example.springnewsapp.service.WeatherService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/weather")
@@ -14,11 +17,13 @@ public class WeatherController {
 
     private final WeatherService weatherService;
     private final UserRepository userRepository;
+    private final UserService userService;
 
     public WeatherController(WeatherService weatherService,
-                             UserRepository userRepository) {
+                             UserRepository userRepository, UserService userService) {
         this.weatherService = weatherService;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     /**
@@ -60,4 +65,18 @@ public class WeatherController {
             ));
         }
     }
+
+    @PutMapping("/preferred-city")
+    public ResponseEntity<?> updatePreferredCity(@RequestParam String city) {
+
+        String email = SecurityUtil.getCurrentUserEmail();
+
+        userService.updatePreferredCity(email, city);
+
+        return ResponseEntity.ok(Map.of(
+                "message", "Preferred city updated successfully",
+                "city", city
+        ));
+    }
+
 }
