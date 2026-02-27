@@ -34,5 +34,17 @@ public class GlobalExceptionHandler {
                 .body(new ApiResponse<>("Validation failed", errors));
     }
 
+    @ExceptionHandler(NewsApiException.class)
+    public ResponseEntity<ApiResponse<Void>> handleNews(NewsApiException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+                .body(new ApiResponse<>("News provider error: " + ex.getMessage()));
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ApiResponse<Void>> handleBadRequest(BadRequestException ex) {
+        return ResponseEntity.badRequest()
+                .body(new ApiResponse<>(ex.getMessage()));
+    }
+
 }
 

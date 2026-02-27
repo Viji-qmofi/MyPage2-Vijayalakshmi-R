@@ -1,5 +1,7 @@
 package org.example.springnewsapp.controller;
 
+import org.example.springnewsapp.dto.ApiResponse;
+import org.example.springnewsapp.dto.ArticleDto;
 import org.example.springnewsapp.service.NewsService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -39,9 +42,17 @@ public class NewsController {
 
     /** GET /api/news/search?query=AI&lang=en&country=us */
     @GetMapping("/search")
-    public Map<String, Object> searchNews(@RequestParam String query,
-                                          @RequestParam(required = false) String lang,
-                                          @RequestParam(required = false) String country) {
-        return newsService.searchNews(query, lang, country);
+    public ResponseEntity<ApiResponse<List<ArticleDto>>> search(
+            @RequestParam String query,
+            @RequestParam(required = false) String lang,
+            @RequestParam(required = false) String country) {
+
+        List<ArticleDto> articles = newsService.searchNews(query, lang, country);
+
+        String message = articles.isEmpty()
+                ? "No articles found"
+                : "News fetched successfully";
+
+        return ResponseEntity.ok(new ApiResponse<>(message, articles));
     }
 }
