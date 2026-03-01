@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { AuthContext } from "../../../context/AuthContext";
 import { Link, useParams } from "react-router";
 import { useNavigate, useLocation } from "react-router";
 import "./News.css";
@@ -9,6 +10,7 @@ import Calendar from "./Calendar";
 import userImg from "../../../assets/images/user.jpg";
 import noImg from "../../../assets/images/no-img.png";
 import Loader from "../../Common/Loader";
+
 
 /* ----------------------------------
    CATEGORY NAMES FOR DISPLAY
@@ -49,7 +51,7 @@ const News = () => {
   const [bookmarks, setBookmarks] = useState([]);
   const [showBookmarksModal, setShowBookmarksModal] = useState(false);
   const [lastVisitedPage, setLastVisitedPage] = useState("/categories/home");
-
+  const { user } = useContext(AuthContext);
   const { category } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -166,9 +168,16 @@ const News = () => {
 
       {/* ---------------- NAVBAR ---------------- */}
       <div className="navbar">
-        <div className="user">
-          <img src={userImg} alt="User Image" />
-          <p>Anna's Page</p>
+        <div
+          className="user"
+          onClick={() => navigate("/profile")}
+          style={{ cursor: "pointer" }}
+        >
+          <img
+            src={user?.profilePic || userImg} // fallback to default image
+            alt="User"
+          />
+          <p>{user?.fullName || "User"}</p>
         </div>
 
         <nav className="categories">
