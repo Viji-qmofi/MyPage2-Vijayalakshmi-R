@@ -25,6 +25,7 @@ public class User {
     private String fullName;
     private String city;
     private String country;
+    private String profilePicUrl;
 
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
@@ -47,6 +48,15 @@ public class User {
 
 
 
+    public User(String email, String password, String fullName, String city, String country, String profilePicUrl) {
+        this.email = email;
+        this.password = password;
+        this.fullName = fullName;
+        this.city = city;
+        this.country = country;
+        this.profilePicUrl = profilePicUrl;
+    }
+
     public User(String email, String password, String fullName, String city, String country) {
         this.email = email;
         this.password = password;
@@ -54,7 +64,6 @@ public class User {
         this.city = city;
         this.country = country;
     }
-
 
     public Long getId() {
         return id;
@@ -102,6 +111,14 @@ public class User {
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public String getProfilePicUrl() {
+        return profilePicUrl;
+    }
+
+    public void setProfilePicUrl(String profilePicUrl) {
+        this.profilePicUrl = profilePicUrl;
     }
 
     public Set<Role> getRoles() {

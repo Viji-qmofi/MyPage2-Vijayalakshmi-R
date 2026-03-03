@@ -1,5 +1,6 @@
 package org.example.springnewsapp.auth;
 
+import org.example.springnewsapp.dto.UserResponse;
 import org.example.springnewsapp.model.Role;
 import org.example.springnewsapp.model.RoleType;
 import org.example.springnewsapp.model.User;
@@ -11,6 +12,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthService {
@@ -88,12 +92,22 @@ public class AuthService {
 
         String token = jwtUtil.generateToken(user);
 
-        return new AuthResponse(
-                token,
+        UserResponse userResponse = mapToUserResponse(user); // includes profilePicUrl, city, country
+        return new AuthResponse(token, userResponse);
+    }
+
+    private UserResponse mapToUserResponse(User user) {
+        Set<String> roleNames = user.getRoles().stream()
+                .map(role -> role.getRoleName().name())
+                .collect(Collectors.toSet());
+
+        return new UserResponse(
                 user.getEmail(),
                 user.getFullName(),
-                user.getCity(),
-                user.getCountry()
+                user.getCity(),          // send city
+                user.getCountry(),       // send country
+                user.getProfilePicUrl(), // send profile pic URL
+                roleNames
         );
     }
 }

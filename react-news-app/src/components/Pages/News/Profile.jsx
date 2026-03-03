@@ -5,99 +5,75 @@ import api from "../../../api/axios.js";
 import { AuthContext } from "../../../context/AuthContext.jsx";
 import "../../../styles/Auth.css";
 
-
 export default function Profile() {
-  const { user, token, login, profilePic, setProfilePic } = useContext(AuthContext);
-
-  // Refs for auto-focus
-  const nameRef = useRef(null);
+  const { user, login } = useContext(AuthContext);
   const navigate = useNavigate();
+  const nameRef = useRef(null);
 
-  // State for editable fields
+  // Form state
   const [form, setForm] = useState({
     fullName: "",
     city: "",
     country: "",
   });
 
-  
+  // Profile pic state
+  const [profilePicFile, setProfilePicFile] = useState(null);
+  const [profilePicPreview, setProfilePicPreview] = useState(null);
 
+  // Load user data whenever context updates
   useEffect(() => {
-    // Load initial user info
     if (user) {
       setForm({
         fullName: user.fullName || "",
-        city: user.preferredCity || "",
+        city: user.city || "",
         country: user.country || "",
       });
+
+      setProfilePicPreview(
+        user.profilePicUrl ? `http://localhost:8080${user.profilePicUrl}` : null
+      );
     }
-
-    // Load profile pic from localStorage
-    const savedPic = localStorage.getItem("profilePic");
-    if (savedPic) setProfilePic(savedPic);
-
-    // Auto-focus on fullName input
     nameRef.current?.focus();
   }, [user]);
 
-  // Handle profile pic selection
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
   const handlePicChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setProfilePicFile(file);
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfilePic(reader.result); // Base64 string
-        localStorage.setItem("profilePic", reader.result);
-      };
+      reader.onloadend = () => setProfilePicPreview(reader.result);
       reader.readAsDataURL(file);
     }
   };
 
-  // Handle input changes
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  // Handle update
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      const res = await api.put(
-        "/auth/update-profile",
-        {
-          fullName: form.fullName,
-          city: form.city,
-          country: form.country,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const data = new FormData();
+      data.append("fullName", form.fullName);
+      data.append("city", form.city);
+      data.append("country", form.country);
+      if (profilePicFile) data.append("profilePic", profilePicFile);
 
-      // Update AuthContext user info
-      login(
-        {
-          ...user,
-          fullName: res.data.fullName,
-          preferredCity: res.data.city,
-          country: res.data.country,
-        },
-        token
-      );
+      const res = await api.put("/auth/update-profile", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      // Update context user immediately with new backend data
+      login(res.data);
 
       Swal.fire({
         icon: "success",
         title: "Profile Updated",
         text: "Your profile information has been successfully updated.",
-        timer: 1500,
-        showConfirmButton: false,
-      }).then(() => {
-        navigate("/news");
       });
+
+      navigate("/categories/home"); // Go back to News page
     } catch (err) {
       console.error(err);
       Swal.fire({
@@ -112,17 +88,19 @@ export default function Profile() {
     <div className="auth-container">
       <div className="auth-card">
         <h2 className="auth-title">Edit Profile</h2>
+
+        {/* Profile picture */}
         <div className="profile-pic-section">
-        <img
-          src={profilePic || "https://via.placeholder.com/150"}
-          alt="Profile"
-          className="profile-pic"
-        />
-        <input type="file" accept="image/*" onChange={handlePicChange} />
-      </div>
+          <img
+            src={profilePicPreview || "https://via.placeholder.com/150"}
+            alt="Profile"
+            className="profile-pic"
+          />
+          <input type="file" accept="image/*" onChange={handlePicChange} />
+        </div>
+
+        {/* Profile form */}
         <form className="auth-form" onSubmit={handleUpdate}>
-         
-          {/* Name input */}
           <input
             ref={nameRef}
             type="text"
@@ -132,8 +110,6 @@ export default function Profile() {
             value={form.fullName}
             onChange={handleChange}
           />
-
-          {/* City input */}
           <input
             type="text"
             name="city"
@@ -142,8 +118,6 @@ export default function Profile() {
             value={form.city}
             onChange={handleChange}
           />
-
-          {/* Country input */}
           <input
             type="text"
             name="country"
@@ -152,7 +126,6 @@ export default function Profile() {
             value={form.country}
             onChange={handleChange}
           />
-
           <button type="submit" className="auth-button">
             Update Profile
           </button>
