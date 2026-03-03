@@ -4,46 +4,40 @@ import java.util.Set;
 
 public class UserResponse {
 
-    private Long id;
     private String email;
     private String fullName;
-    private String city;
-    private String country;
+    private String city;          // add this
+    private String country;       // add this
+    private String profilePicUrl; // add this
     private Set<String> roles;
 
-    public UserResponse(Long id, String email, String fullName,
-                        String city, String country, Set<String> roles) {
-        this.id = id;
+    public UserResponse(String email, String fullName, String city, String country,
+                        String profilePicUrl, Set<String> roles) {
+
         this.email = email;
         this.fullName = fullName;
         this.city = city;
         this.country = country;
+        this.profilePicUrl = profilePicUrl;
         this.roles = roles;
     }
 
-    public Long getId() {
-        return id;
-    }
+    // getters & setters
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public String getEmail() {
-        return email;
-    }
+    public String getFullName() { return fullName; }
+    public void setFullName(String fullName) { this.fullName = fullName; }
 
-    public String getFullName() {
-        return fullName;
-    }
+    public String getCity() { return city; }
+    public void setCity(String city) { this.city = city; }
 
-    public String getCity() {
-        return city;
-    }
+    public String getCountry() { return country; }
+    public void setCountry(String country) { this.country = country; }
 
-    public String getCountry() {
-        return country;
-    }
+    public String getProfilePicUrl() { return profilePicUrl; }
+    public void setProfilePicUrl(String profilePicUrl) { this.profilePicUrl = profilePicUrl; }
 
-    public Set<String> getRoles() {
-        return roles;
-    }
-
-    // getters
+    public Set<String> getRoles() { return roles; }
+    public void setRoles(Set<String> roles) { this.roles = roles; }
 }

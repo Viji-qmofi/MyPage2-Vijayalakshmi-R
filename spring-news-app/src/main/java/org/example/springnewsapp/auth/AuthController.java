@@ -14,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -58,14 +59,11 @@ public class AuthController {
     @PutMapping("/update-profile")
     public ResponseEntity<UserResponse> updateProfile(
             @AuthenticationPrincipal UserDetails userDetails,
-            @RequestBody UpdateProfileRequest request) {
+            @ModelAttribute UpdateProfileRequest request,  // note @ModelAttribute
+            @RequestParam(value = "profilePic", required = false) MultipartFile profilePic) {
 
-        return ResponseEntity.ok(
-                userService.updateProfile(
-                        userDetails.getUsername(),
-                        request
-                )
-        );
+        UserResponse updatedUser = userService.updateProfile(userDetails.getUsername(), request, profilePic);
+        return ResponseEntity.ok(updatedUser);
     }
 
 }

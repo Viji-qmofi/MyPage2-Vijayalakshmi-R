@@ -51,7 +51,7 @@ const News = () => {
   const [bookmarks, setBookmarks] = useState([]);
   const [showBookmarksModal, setShowBookmarksModal] = useState(false);
   const [lastVisitedPage, setLastVisitedPage] = useState("/categories/home");
-  const { user, profilePic } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const { category } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -162,6 +162,11 @@ const News = () => {
     setShowBookmarksModal(location.pathname === "/bookmarks");
   }, [location.pathname]);
 
+  const profilePicSrc = user?.profilePicUrl
+    ? `http://localhost:8080${user.profilePicUrl}`
+    : "https://via.placeholder.com/50"; // default pic if none
+
+
   /* RENDER  */
   return (
     <div className="news-content">
@@ -173,10 +178,11 @@ const News = () => {
           onClick={() => navigate("/profile")}
           style={{ cursor: "pointer" }}
         >
-          <img
-            src={profilePic || userImg} // fallback to default image
-            alt="User"
-          />
+         <img
+          src={profilePicSrc} 
+          alt="Profile"
+          className="profile-pic"
+        />
           <p>{user?.fullName || "User"}</p>
         </div>
 

@@ -41,28 +41,26 @@ export default function Login() {
     e.preventDefault();
     if (!validate()) return;
 
-      // Clear old token before attempting login
-      localStorage.removeItem("token");
-      console.log("Using API instance:", api);
-
     try {
       const response = await api.post("/auth/login", form);
 
-      const { token, email, fullName, defaultCity } = response.data;
+      
 
-      const user = { email, fullName, preferredCity: defaultCity };
+      console.log("Login API response:", response.data);
 
-      // Save token and user in context & localStorage
+      const { token, user } = response.data;
+
+      // Save user & token in context & localStorage
       login(user, token);
 
+      // Navigate to News page
       navigate("/news");
     } catch (error) {
+      console.error("Login error:", error);
       Swal.fire({
         icon: "error",
         title: "Login Failed",
-        text:
-          error.response?.data?.message ||
-          "Invalid email or password",
+        text: error.response?.data?.message || "Invalid email or password",
       });
     }
   };
@@ -71,47 +69,36 @@ export default function Login() {
     <div className="auth-container">
       <div className="auth-card">
         <h2 className="auth-title">Welcome Back</h2>
-            <form className="auth-form" onSubmit={handleSubmit}>       
 
-            <input
+        <form className="auth-form" onSubmit={handleSubmit}>
+          <input
             ref={usernameRef}
             type="email"
             className="auth-input"
             placeholder="Email"
             value={form.email}
-            onChange={(e) =>
-                  setForm({ ...form, email: e.target.value })
-            }
-            />
-            {errors.email && (
-            <span className="error">{errors.email}</span>
-            )}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+          />
+          {errors.email && <span className="error">{errors.email}</span>}
 
-            <input
+          <input
             type="password"
             className="auth-input"
             placeholder="Password"
             value={form.password}
-            onChange={(e) =>
-                  setForm({ ...form, password: e.target.value })
-            }
-            />
-            {errors.password && (
-            <span className="error">{errors.password}</span>
-            )}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+          />
+          {errors.password && <span className="error">{errors.password}</span>}
 
-            <button type="submit" className="auth-button">
-                  Login
-            </button>
+          <button type="submit" className="auth-button">
+            Login
+          </button>
+        </form>
 
-      </form>
-    
-      <div className="auth-link">
-            Don't have an account?{" "}
-            <span onClick={() => navigate("/register")}>
-                  Register
-            </span>
-      </div>
+        <div className="auth-link">
+          Don't have an account?{" "}
+          <span onClick={() => navigate("/register")}>Register</span>
+        </div>
       </div>
     </div>
   );

@@ -37,7 +37,8 @@ public class SecurityConfig {
                 .cors(cors -> {})
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()   // CRITICAL
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/uploads/**").permitAll()// CRITICAL
                         .requestMatchers("/api/weather/**").permitAll()
                         .requestMatchers("/api/news/**").permitAll() // news endpoints need token
                         .requestMatchers("/error").permitAll()

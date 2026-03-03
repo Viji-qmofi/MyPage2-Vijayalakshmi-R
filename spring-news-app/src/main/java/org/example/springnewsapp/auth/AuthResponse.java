@@ -1,28 +1,31 @@
 package org.example.springnewsapp.auth;
 
+import org.example.springnewsapp.dto.UserResponse;
+
+import java.util.Set;
+
 public class AuthResponse {
+    private String token;
+    private UserResponse user;
 
-    private final String token;
-    private final String email;
-    private final String fullName;
-    private final String city;
-    private final String country;
+    public AuthResponse() {}
 
-    public AuthResponse(String token, String email, String fullName, String defaultCity, String country) {
+    public AuthResponse(String token, UserResponse user) {
         this.token = token;
-        this.email = email;
-        this.fullName = fullName;
-        this.city = defaultCity;
-        this.country = country;
+        this.user = user;
     }
 
-    // Converts Jackson /objects to JSON
-    public String getToken() { return token; }
-    public String getEmail() { return email; }
-    public String getFullName() { return fullName; }
-    public String getDefaultCity() { return city; }
-    public String getCountry(){ return country; }
+    // getters & setters
+    public String getToken() {
+        return token;
+    }
+    public void setToken(String token) {
+        this.token = token;
+    }
+    public UserResponse getUser() {
+        return user;
+    }
+    public void setUser(UserResponse user) {
+        this.user = user;
+    }
 }
-
-
-
