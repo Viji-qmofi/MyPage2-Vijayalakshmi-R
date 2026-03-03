@@ -10,6 +10,9 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem("user") || "null")
   );
+  const [profilePic, setProfilePic] = useState(
+  localStorage.getItem("profilePic") || null
+);
 
   // Whenever token or user changes, sync with localStorage
   useEffect(() => {
@@ -39,7 +42,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
+    <AuthContext.Provider value={{
+    user,
+    token,
+    login,
+    logout,
+    profilePic,
+    setProfilePic
+  }}>
       {children}
     </AuthContext.Provider>
   );
