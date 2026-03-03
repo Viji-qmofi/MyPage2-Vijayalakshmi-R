@@ -51,7 +51,7 @@ const News = () => {
   const [bookmarks, setBookmarks] = useState([]);
   const [showBookmarksModal, setShowBookmarksModal] = useState(false);
   const [lastVisitedPage, setLastVisitedPage] = useState("/categories/home");
-  const { user } = useContext(AuthContext);
+  const { user, profilePic } = useContext(AuthContext);
   const { category } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -174,7 +174,7 @@ const News = () => {
           style={{ cursor: "pointer" }}
         >
           <img
-            src={user?.profilePic || userImg} // fallback to default image
+            src={profilePic || userImg} // fallback to default image
             alt="User"
           />
           <p>{user?.fullName || "User"}</p>

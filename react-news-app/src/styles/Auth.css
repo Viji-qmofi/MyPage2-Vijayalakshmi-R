@@ -93,6 +93,22 @@
   text-decoration: underline;
 }
 
+.profile-pic-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.profile-pic {
+  width: 120px;          /* fixed size */
+  height: 120px;
+  border-radius: 50%;    /* circular */
+  object-fit: cover;     /* crop properly */
+  border: 2px solid #ddd;
+}
+
 /* Animations */
 @keyframes fadeSlideUp {
   from {

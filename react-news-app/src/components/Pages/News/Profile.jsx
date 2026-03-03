@@ -4,88 +4,106 @@ import Swal from "sweetalert2";
 import api from "../../../api/axios.js";
 import { AuthContext } from "../../../context/AuthContext.jsx";
 import "../../../styles/Auth.css";
+
+
 export default function Profile() {
-  const { user, token, login } = useContext(AuthContext);
+  const { user, token, login, profilePic, setProfilePic } = useContext(AuthContext);
+
+  // Refs for auto-focus
+  const nameRef = useRef(null);
   const navigate = useNavigate();
 
-  // Prefill form with current user values
+  // State for editable fields
   const [form, setForm] = useState({
     fullName: "",
     city: "",
     country: "",
   });
 
-  // Profile image preview URL
-  const [preview, setPreview] = useState("");
-
-  const nameRef = useRef(null);
+  
 
   useEffect(() => {
+    // Load initial user info
     if (user) {
       setForm({
         fullName: user.fullName || "",
         city: user.preferredCity || "",
         country: user.country || "",
       });
-      setPreview(user.profilePic || ""); // Show current image if exists
     }
 
-    // Auto-focus on name input
+    // Load profile pic from localStorage
+    const savedPic = localStorage.getItem("profilePic");
+    if (savedPic) setProfilePic(savedPic);
+
+    // Auto-focus on fullName input
     nameRef.current?.focus();
   }, [user]);
 
-  const validate = () => {
-    const errors = {};
-    if (!form.fullName.trim()) errors.fullName = "Full Name is required";
-    if (!form.city.trim()) errors.city = "City is required";
-    if (!form.country.trim()) errors.country = "Country is required";
-    return errors;
-  };
-
-  const handleFileChange = (e) => {
+  // Handle profile pic selection
+  const handlePicChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setPreview(URL.createObjectURL(file)); // preview
-      setForm({ ...form, profilePicFile: file }); // store file temporarily
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfilePic(reader.result); // Base64 string
+        localStorage.setItem("profilePic", reader.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
-  const handleSubmit = async (e) => {
+  // Handle input changes
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // Handle update
+  const handleUpdate = async (e) => {
     e.preventDefault();
-    const errors = validate();
-    if (Object.keys(errors).length > 0) {
-      Swal.fire({
-        icon: "error",
-        title: "Validation Failed",
-        text: Object.values(errors).join(", "),
-      });
-      return;
-    }
-
     try {
-      const formData = new FormData();
-      formData.append("fullName", form.fullName);
-      formData.append("city", form.city);
-      formData.append("country", form.country);
-      if (form.profilePicFile) formData.append("profilePic", form.profilePicFile);
+      const res = await api.put(
+        "/auth/update-profile",
+        {
+          fullName: form.fullName,
+          city: form.city,
+          country: form.country,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
-      const res = await api.put("/auth/update-profile", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      // Update AuthContext
-      login({ ...user, ...res.data }, token);
+      // Update AuthContext user info
+      login(
+        {
+          ...user,
+          fullName: res.data.fullName,
+          preferredCity: res.data.city,
+          country: res.data.country,
+        },
+        token
+      );
 
       Swal.fire({
         icon: "success",
         title: "Profile Updated",
-        text: "Your details have been updated successfully",
+        text: "Your profile information has been successfully updated.",
+        timer: 1500,
+        showConfirmButton: false,
+      }).then(() => {
+        navigate("/news");
       });
     } catch (err) {
+      console.error(err);
       Swal.fire({
         icon: "error",
         title: "Update Failed",
-        text: err.response?.data?.message || "Could not update profile",
+        text: err.response?.data?.message || "Something went wrong!",
       });
     }
   };
@@ -94,45 +112,45 @@ export default function Profile() {
     <div className="auth-container">
       <div className="auth-card">
         <h2 className="auth-title">Edit Profile</h2>
-        <form className="auth-form" onSubmit={handleSubmit}>
-          {/* Profile image */}
-          <div className="profile-pic-container">
-            {preview && (
-              <img
-                src={preview}
-                alt="Profile"
-                className="profile-preview"
-              />
-            )}
-            <input type="file" accept="image/*" onChange={handleFileChange} />
-          </div>
-
+        <div className="profile-pic-section">
+        <img
+          src={profilePic || "https://via.placeholder.com/150"}
+          alt="Profile"
+          className="profile-pic"
+        />
+        <input type="file" accept="image/*" onChange={handlePicChange} />
+      </div>
+        <form className="auth-form" onSubmit={handleUpdate}>
+         
           {/* Name input */}
           <input
             ref={nameRef}
             type="text"
+            name="fullName"
             placeholder="Full Name"
             className="auth-input"
             value={form.fullName}
-            onChange={(e) => setForm({ ...form, fullName: e.target.value })}
+            onChange={handleChange}
           />
 
           {/* City input */}
           <input
             type="text"
+            name="city"
             placeholder="City"
             className="auth-input"
             value={form.city}
-            onChange={(e) => setForm({ ...form, city: e.target.value })}
+            onChange={handleChange}
           />
 
           {/* Country input */}
           <input
             type="text"
+            name="country"
             placeholder="Country"
             className="auth-input"
             value={form.country}
-            onChange={(e) => setForm({ ...form, country: e.target.value })}
+            onChange={handleChange}
           />
 
           <button type="submit" className="auth-button">
