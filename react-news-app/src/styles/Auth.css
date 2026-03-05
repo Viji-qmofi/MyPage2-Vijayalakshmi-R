@@ -1,5 +1,5 @@
 /* Full page layout */
-.auth-container {
+.profile-container {
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -10,7 +10,7 @@
 }
 
 /* Glass card */
-.auth-card {
+.profile-card {
   width: 380px;
   padding: 40px;
   border-radius: 16px;
@@ -23,7 +23,7 @@
 }
 
 /* Title */
-.auth-title {
+.profile-title {
   text-align: center;
   margin-bottom: 25px;
   font-size: 26px;
@@ -31,7 +31,7 @@
 }
 
 /* Inputs */
-.auth-input {
+.profile-input {
   width: 100%;
   padding: 12px;
   margin-bottom: 18px;
@@ -44,13 +44,17 @@
   transition: all 0.3s ease;
 }
 
-.auth-input:focus {
+.profile-input:focus {
   transform: scale(1.02);
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
 }
 
+.profile-buttons {
+  display: flex;
+  gap: 10px;
+}
 /* Button */
-.auth-button {
+.profile-button {
   width: 100%;
   padding: 12px;
   border-radius: 8px;
@@ -62,7 +66,7 @@
   transition: 0.3s ease;
 }
 
-.auth-button:hover {
+.profile-button:hover {
   background: #f2f2f2;
   transform: translateY(-2px);
 }
@@ -74,20 +78,20 @@
   display: block;
 }
 
-.auth-form input:focus {
+.profile-form input:focus {
   outline: none;
   border: 1px solid #6877f4;
   box-shadow: 0 0 5px rgba(104, 119, 244, 0.5);
 }
 
 /* Switch link */
-.auth-link {
+.profile-link {
   margin-top: 15px;
   text-align: center;
   font-size: 14px;
 }
 
-.auth-link span {
+.profile-link span {
   cursor: pointer;
   font-weight: bold;
   text-decoration: underline;
