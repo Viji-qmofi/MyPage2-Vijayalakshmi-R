@@ -44,31 +44,36 @@ import java.util.stream.Collectors;
             user.setCity(request.getCity());
             user.setCountry(request.getCountry());
 
-
-            // Handle profile pic
-            Path uploadPath = Paths.get("C:/Users/vijir/MyPage2-Vijayalakshmi-R/uploads");
-
-            try {
-
-                // ✅ Ensure directory exists
-                if (!Files.exists(uploadPath)) {
-                    Files.createDirectories(uploadPath);
-                }
+            // ONLY run file logic if a new file exists
+            if (profilePic != null && !profilePic.isEmpty()) {
 
                 String fileName = System.currentTimeMillis() + "_" + profilePic.getOriginalFilename();
 
-                Path filePath = uploadPath.resolve(fileName);
+                // Handle profile pic
+                Path uploadPath = Paths.get("C:/Users/vijir/MyPage2-Vijayalakshmi-R/uploads");
 
-                System.out.println("Saving profile pic to: " + filePath);
+                try {
 
-                // ✅ Replace if already exists
-                Files.copy(profilePic.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                    // Ensure directory exists
+                    if (!Files.exists(uploadPath)) {
+                        Files.createDirectories(uploadPath);
+                    }
 
-                user.setProfilePicUrl("/uploads/" + fileName);
+                   // String fileName = System.currentTimeMillis() + "_" + profilePic.getOriginalFilename();
 
-            } catch (IOException e) {
-                e.printStackTrace();  // VERY IMPORTANT for debugging
-                throw new RuntimeException("Failed to store file", e);
+                    Path filePath = uploadPath.resolve(fileName);
+
+                    System.out.println("Saving profile pic to: " + filePath);
+
+                    // ✅ Replace if already exists
+                    Files.copy(profilePic.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+                    user.setProfilePicUrl("/uploads/" + fileName);
+
+                } catch (IOException e) {
+                    e.printStackTrace();  // VERY IMPORTANT for debugging
+                    throw new RuntimeException("Failed to store file", e);
+                }
             }
 
             userRepository.save(user);
