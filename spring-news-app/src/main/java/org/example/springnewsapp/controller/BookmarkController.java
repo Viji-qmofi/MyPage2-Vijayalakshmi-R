@@ -80,6 +80,7 @@ public class BookmarkController {
     }
 
     // ------------------ Delete a single bookmark ------------------
+    @Transactional
     @DeleteMapping("/delete")
     public ResponseEntity<ApiResponse<Void>> deleteBookmark(@RequestParam String url) {
         String email = SecurityUtil.getCurrentUserEmail();

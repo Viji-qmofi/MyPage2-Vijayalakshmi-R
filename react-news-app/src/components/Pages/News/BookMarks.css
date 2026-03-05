@@ -50,3 +50,26 @@
   color: #fff;
   cursor: pointer;
 }
+
+.bookmarks-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  gap: 1rem;
+}
+
+.bookmarks-pagination button {
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.6rem;
+  border: none;
+  cursor: pointer;
+  background: #b88efc;
+  color: #111;
+  font-weight: bold;
+}
+
+.bookmarks-pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
