@@ -51,7 +51,8 @@ const News = () => {
   const [bookmarks, setBookmarks] = useState([]);
   const [showBookmarksModal, setShowBookmarksModal] = useState(false);
   const [lastVisitedPage, setLastVisitedPage] = useState("/categories/home");
-  const { user } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
+  
   const { category } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -71,6 +72,11 @@ const News = () => {
       → user hits "back" and doesn't return to the invalid URL (better UX)*/
     }
   }, [category, location.pathname, navigate]);
+
+  const handleLogout = () => {
+    logout();                // clears token + user from context/localStorage
+    navigate("/login");      // redirect to login page
+  };
 
 
   /* -------------------------------
