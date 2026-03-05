@@ -208,6 +208,7 @@
 
 .search-top {
   display: flex;
+  justify-content: center;
   align-items: center;
   gap: 1rem;
 }
@@ -225,30 +226,39 @@
 
 .search-location {
   position: relative;
-   padding-left: 70px;
-  
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
 .search-location input {
- 
-  width: 225px;
-  padding: 4px;
-  color:black; 
-  
+  width: 220px;
+  padding: 6px 28px 6px 4px;
+  border: none;
+  border-bottom: 1px solid #aaa;
+  background: transparent;
+  outline: none;
+  font-size: 1.4rem;
+  color: #fff;
+}
+
+.search-location input::placeholder {
+  color: #aaa;
 }
 
 .search-location i {
   position: absolute;
+  right: calc(50% - 110px);
   top: 50%;
-  padding-right: 80px;
   transform: translateY(-50%);
-  right: .5rem;
-  font-size: 2rem;
+  font-size: 1.5rem;
+  color: #ccc;
   cursor: pointer;
 }
 
-/* weather display */
-
+.search-location i:hover {
+  color: #fff;
+}
 .weather-data {
   display: flex;
   flex-direction: column;

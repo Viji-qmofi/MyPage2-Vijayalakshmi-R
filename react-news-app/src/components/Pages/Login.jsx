@@ -66,15 +66,15 @@ export default function Login() {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <h2 className="auth-title">Welcome Back</h2>
+    <div className="profile-container">
+      <div className="profile-card">
+        <h2 className="profile-title">Welcome Back</h2>
 
-        <form className="auth-form" onSubmit={handleSubmit}>
+        <form className="profile-form" onSubmit={handleSubmit}>
           <input
             ref={usernameRef}
             type="email"
-            className="auth-input"
+            className="profile-input"
             placeholder="Email"
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -83,19 +83,19 @@ export default function Login() {
 
           <input
             type="password"
-            className="auth-input"
+            className="profile-input"
             placeholder="Password"
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
           />
           {errors.password && <span className="error">{errors.password}</span>}
 
-          <button type="submit" className="auth-button">
+          <button type="submit" className="profile-button">
             Login
           </button>
         </form>
 
-        <div className="auth-link">
+        <div className="profile-link">
           Don't have an account?{" "}
           <span onClick={() => navigate("/register")}>Register</span>
         </div>
