@@ -16,15 +16,19 @@ public class Bookmark {
 
     private String title;
 
-    @Column(length = 2000)
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(length = 5000)
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @Column(nullable = false, length = 1000)
     private String url;
 
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String image;
 
     private String source;

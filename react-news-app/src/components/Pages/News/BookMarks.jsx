@@ -9,7 +9,10 @@ const BookMarks = ({
   bookmarks,
   onClose,
   onSelectArticle,
-  onDeleteBookmark
+  onDeleteBookmark,
+  onPrev,
+  onNext,
+  page
 }) => {
   return (
     <Modal show={show} onClose={onClose}>
@@ -37,6 +40,17 @@ const BookMarks = ({
             </span>
           </div>
         ))}
+      </div>
+      <div className="bookmarks-pagination">
+        <button onClick={onPrev} disabled={page === 0}>
+          Prev
+        </button>
+
+        <span>Page {page + 1}</span>
+
+        <button onClick={onNext} disabled={bookmarks.length < 6}>
+          Next
+        </button>
       </div>
     </Modal>
   );

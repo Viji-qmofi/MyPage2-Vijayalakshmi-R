@@ -10,6 +10,8 @@ import Calendar from "./Calendar";
 import userImg from "../../../assets/images/user.jpg";
 import noImg from "../../../assets/images/no-img.png";
 import Loader from "../../Common/Loader";
+import api from "../../../api/axios"; 
+import Swal from "sweetalert2";      
 
 
 /* ----------------------------------
@@ -56,6 +58,8 @@ const News = () => {
   const { category } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const [bookmarkPage, setBookmarkPage] = useState(0);
+  const [bookmarkSize] = useState(10); // can tune this
 
   /* ----------------------------------
     EARLY REDIRECT FOR INVALID CATEGORY
@@ -73,10 +77,7 @@ const News = () => {
     }
   }, [category, location.pathname, navigate]);
 
-  const handleLogout = () => {
-    logout();                // clears token + user from context/localStorage
-    navigate("/login");      // redirect to login page
-  };
+
 
 
   /* -------------------------------
@@ -95,19 +96,54 @@ const News = () => {
   /* -------------------------------
      Add / Remove Bookmarks
   -------------------------------- */
-  const handleBookmarkClick = (article) => {
-    setBookmarks((prev) => {
-      const alreadySaved = prev.some((b) => b.title === article.title);
+const handleBookmarkClick = async (article) => {
+  try {
+    const alreadySaved = bookmarks.some((b) => b.url === article.url);
 
-      const updated = alreadySaved
-        ? prev.filter((b) => b.title !== article.title)
-        : [...prev, article];
+    if (alreadySaved) {
+      await api.delete("/bookmarks/delete", { params: { url: article.url } });
 
-      localStorage.setItem("bookmarks", JSON.stringify(updated));
-      return updated;
+      setBookmarks((prev) => prev.filter((b) => b.url !== article.url));
+    } else {
+      const payload = {
+        title: article.title,
+        description: article.description,
+        content: article.content,
+        url: article.url,
+        image: article.image,
+        source: article.source?.name || article.source || "Unknown",
+        publishedAt: article.publishedAt,
+      };
+
+      const res = await api.post("/bookmarks/add", payload);
+
+      const savedBookmark = res.data.data; // ArticleDto
+      setBookmarks((prev) => [savedBookmark, ...prev]); // put newest on top
+    }
+  } catch (err) {
+    console.error("Bookmark toggle failed", err);
+
+    Swal.fire({
+      icon: "error",
+      title: "Bookmark Error",
+      text: err.response?.data?.message || "Failed to update bookmark",
     });
-  };
+  }
+};
+  
+  const fetchBookmarks = async (page = 0, size = bookmarkSize) => {
+  try {
+    const res = await api.get("/bookmarks/get", {
+      params: { page, size },
+    });
 
+    // your backend wraps in ApiResponse -> { message, data }
+    setBookmarks(res.data.data || []);
+    setBookmarkPage(page);
+  } catch (err) {
+    console.error("Failed to fetch bookmarks", err);
+  }
+};
   /*  Sync selectedCategory with URL (only map)  */
   useEffect(() => {
     if (location.pathname === "/bookmarks") return;
@@ -116,6 +152,10 @@ const News = () => {
       setSelectedCategory(categoryMap[category]);
     }
   }, [category, location.pathname]);
+
+  useEffect(() => {
+    fetchBookmarks(0);
+  }, [user?.email]);
 
   /*     Fetch News   */
   useEffect(() => {
@@ -136,8 +176,7 @@ const News = () => {
           if (!article.image) article.image = noImg;
         });
 
-        const savedBookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
-        setBookmarks(savedBookmarks);
+        
 
         setHeadline(fetchedNews[0] || null);
         setNews(fetchedNews.slice(1, 7) || []);
@@ -226,7 +265,7 @@ const News = () => {
               {headline.title}
 
               <i
-                className={`${bookmarks.some((b) => b.title === headline.title)
+                className={`${bookmarks.some((b) => b.url === headline.url)
                     ? "fa-solid"
                     : "fa-regular"
                   } fa-bookmark bookmark`}
@@ -254,7 +293,7 @@ const News = () => {
               <h3>
                 {article.title}
                 <i
-                  className={`${bookmarks.some((b) => b.title === article.title)
+                  className={`${bookmarks.some((b) => b.url === article.url)
                       ? "fa-solid"
                       : "fa-regular"
                     } fa-bookmark bookmark`}
@@ -325,6 +364,9 @@ const News = () => {
           setTimeout(() => handleOpenModal(article), 50);
         }}
         onDeleteBookmark={handleBookmarkClick}
+        onPrev={() => fetchBookmarks(Math.max(0, bookmarkPage - 1))}
+        onNext={() => fetchBookmarks(bookmarkPage + 1)}
+        page={bookmarkPage}
       />
 
       {/* ---------------- WEATHER + CALENDAR ---------------- */}
