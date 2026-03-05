@@ -1,7 +1,7 @@
 import React, { forwardRef } from "react";
 
 const Input = forwardRef(
-  ({ id, name, label, type, value, handleChange, placeholder, required }, ref) => {
+  ({ id, name, label, type, value, handleChange, onKeyDown, placeholder, required }, ref) => {
     return (
       <>
         {label && (
@@ -18,6 +18,7 @@ const Input = forwardRef(
           placeholder={placeholder}
           value={value}
           onChange={handleChange}
+          onKeyDown={onKeyDown}
           ref={ref}   
           required={required}
         />

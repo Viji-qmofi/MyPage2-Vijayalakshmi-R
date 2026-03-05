@@ -9,7 +9,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  row-gap: 3rem;
+  gap: 1.6rem;
   position: relative;
   overflow: hidden;
 }
@@ -186,74 +186,79 @@
   }
 }
 
+/* clock */
 .city-time {
   position: absolute;
-  top: 1.2rem;
+  top: 1rem;
   right: 1.5rem;
-  font-size: 1.4rem;
-  font-weight: 500;
+  font-size: 1.3rem;
   color: #eee;
   opacity: 0.9;
 }
 
+/* search section */
+
 .search {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  row-gap: 1rem;
+  gap: 2rem;
+  z-index: 1;
 }
 
 .search-top {
   display: flex;
   align-items: center;
-  column-gap: 1rem;
+  gap: 1rem;
 }
 
 .search-top i {
-  font-size: 2.5rem;
+  font-size: 2rem;
   color: #ddd;
 }
 
 .location {
   font-family: "Comfortaa", sans-serif;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-weight: bold;
-  color: #fff;
 }
 
 .search-location {
   position: relative;
+   padding-left: 70px;
+  
 }
 
 .search-location input {
-  width: clamp(12rem, 12cqi, 20rem);
-  height: 4rem;
-  border: none;
-  background-color: transparent;
-  border-bottom: 0.1rem solid #aaa;
-  font-size: 1.5rem;
-  color: #ddd;
-  cursor: pointer;
+ 
+  width: 225px;
+  padding: 4px;
+  color:black; 
+  
 }
 
 .search-location i {
   position: absolute;
   top: 50%;
+  padding-right: 80px;
   transform: translateY(-50%);
-  right: 1rem;
-  font-size: 1.8rem;
-  color: #fff;
+  right: .5rem;
+  font-size: 2rem;
   cursor: pointer;
 }
+
+/* weather display */
 
 .weather-data {
   display: flex;
   flex-direction: column;
   align-items: center;
-  row-gap: 2rem;
+  gap: .8rem;
+  z-index: 1;
 }
 
 .weather-data i {
-  font-size: 5rem;
+  font-size: 4.2rem;
 }
 
 .weather-data i.bxs-sun {
@@ -279,15 +284,93 @@
 .weather-type,
 .temp {
   font-family: "Comfortaa", sans-serif;
-  font-size: 2rem;
+  font-size: 1.6rem;
   color: #ddd;
 }
 
+/* error */
+
 .not-found {
   font-family: "Comfortaa", sans-serif;
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   color: #ddd;
-  margin-bottom: 12rem;
+}
+
+/* HISTORY */
+
+.weather-history {
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  font-family: "Comfortaa", sans-serif;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.3rem;
+  margin-bottom: .4rem;
+}
+
+.history-header button {
+  background: none;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+}
+
+.history-header button:hover {
+  color: #fff;
+}
+
+/* scroll area */
+
+.history-scroll {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.history-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+
+.history-scroll::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 3px;
+}
+
+.weather-history ul {
+  list-style: none;
+}
+
+.weather-history li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .3rem 0;
+  font-size: 1.2rem;
+}
+
+.history-city {
+  cursor: pointer;
+}
+
+.history-city:hover {
+  color: #fff;
+}
+
+.history-delete {
+  background: none;
+  border: none;
+  color: #777;
+  cursor: pointer;
+  
+}
+
+.history-delete:hover {
+  color: #ff6b6b;
 }
 
 @media (max-width: 768px) {

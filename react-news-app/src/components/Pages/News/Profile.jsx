@@ -84,10 +84,24 @@ export default function Profile() {
     }
   };
 
+const handleCancel = () => {
+  Swal.fire({
+    title: "Discard changes?",
+    text: "Your updates will not be saved.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, go back",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      navigate("/news");
+    }
+  });
+};
+
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <h2 className="auth-title">Edit Profile</h2>
+    <div className="profile-container">
+      <div className="profile-card">
+        <h2 className="profile-title">Edit Profile</h2>
 
         {/* Profile picture */}
         <div className="profile-pic-section">
@@ -100,13 +114,21 @@ export default function Profile() {
         </div>
 
         {/* Profile form */}
-        <form className="auth-form" onSubmit={handleUpdate}>
+        <form 
+        className="profile-form" 
+        onSubmit={handleUpdate}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+          }
+        }}
+        >
           <input
             ref={nameRef}
             type="text"
             name="fullName"
             placeholder="Full Name"
-            className="auth-input"
+            className="profile-input"
             value={form.fullName}
             onChange={handleChange}
           />
@@ -114,7 +136,7 @@ export default function Profile() {
             type="text"
             name="city"
             placeholder="City"
-            className="auth-input"
+            className="profile-input"
             value={form.city}
             onChange={handleChange}
           />
@@ -122,13 +144,26 @@ export default function Profile() {
             type="text"
             name="country"
             placeholder="Country"
-            className="auth-input"
+            className="profile-input"
             value={form.country}
             onChange={handleChange}
           />
-          <button type="submit" className="auth-button">
+          <div className="profile-buttons">
+          <button 
+          type="submit" 
+          className="profile-button"
+          >
             Update Profile
           </button>
+
+          <button
+            type="button"
+            className="profile-button"
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
+          </div>
         </form>
       </div>
     </div>
