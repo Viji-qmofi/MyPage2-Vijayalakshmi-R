@@ -46,7 +46,7 @@ public class WeatherService {
 
         historyRepository.save(history);
 
-// ✅ keep only last 5 searches
+// keep only last 5 searches
         List<WeatherSearchHistory> list =
                 historyRepository.findByUserIdOrderBySearchedAtDesc(user.getId());
 

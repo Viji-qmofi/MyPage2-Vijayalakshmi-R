@@ -1,39 +1,112 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Weather.css";
 import Input from "../../Common/Input";
+import api from "../../../api/axios";
 
 const Weather = () => {
   const [data, setData] = useState({});
   const [location, setLocation] = useState("");
   const [localTime, setLocalTime] = useState("");
+  const [history, setHistory] = useState([]);
   const [shouldRefocus, setShouldRefocus] = useState(false);
+
   const inputRef = useRef(null);
 
   useEffect(() => {
     if (inputRef.current) inputRef.current.focus();
   }, []);
 
-  // Fetch default location
+  // Load weather on start
   useEffect(() => {
-    const fetchDefaultLocation = async () => {
-      const defaultLocation = "St Louis";
-      const url = `https://api.openweathermap.org/data/2.5/weather?q=${defaultLocation}&units=Imperial&appid=de0af54d43123c94f77d29e171071ec0`;
-
-      try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-
-        const weatherData = await response.json();
-        setData(weatherData);
-      } catch (error) {
-        console.error("Error fetching weather:", error);
-      }
-    };
-
-    fetchDefaultLocation();
+    loadWeather();
+    loadHistory();
   }, []);
 
-  // Live clock
+  const loadWeather = async () => {
+    const token = localStorage.getItem("token");
+
+    try {
+      const response = token
+        ? await api.get("/weather/me")
+        : await api.get("/weather");
+
+      setData(response.data);
+    } catch (error) {
+      console.error("Weather load failed", error);
+    }
+  };
+
+  const loadHistory = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      const response = await api.get("/weather/history");
+      setHistory(response.data.data);
+      console.log("History response:", response.data);
+    } catch (error) {
+      console.error("History load failed", error);
+    }
+  };
+
+  const fetchWeatherByCity = async (city) => {
+    try {
+      const response = await api.get(`/weather?city=${city}`);
+      setData(response.data);
+      loadHistory();
+    } catch (error) {
+      console.error("Search failed", error);
+      setData({ error: "City Not Found" });
+    }
+  };
+
+
+  const search = async () => {
+    if (!location.trim()) return;
+
+    await fetchWeatherByCity(location);
+
+    setLocation("");
+    setShouldRefocus(true);
+  };
+
+    const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      search();
+    }
+  };
+
+  const handleInputChange = (e) => setLocation(e.target.value);
+
+  // Delete history item
+  const deleteHistory = async (id) => {
+    try {
+      await api.delete(`/weather/history/${id}`);
+      loadHistory();
+    } catch (error) {
+      console.error("Delete failed", error);
+    }
+  };
+
+  // Clear all history
+  const clearHistory = async () => {
+    try {
+      await api.delete("/weather/history");
+      setHistory([]);
+    } catch (error) {
+      console.error("Clear history failed", error);
+    }
+  };
+
+  // Refocus after search
+  useEffect(() => {
+    if (shouldRefocus && inputRef.current) {
+      setTimeout(() => inputRef.current.focus(), 0);
+      setShouldRefocus(false);
+    }
+  }, [shouldRefocus]);
+
+  // Local time calculation
   useEffect(() => {
     if (!data.timezone) return;
 
@@ -42,6 +115,7 @@ const Weather = () => {
       let hours = localDate.getUTCHours();
       const minutes = localDate.getUTCMinutes();
       const ampm = hours >= 12 ? "PM" : "AM";
+
       hours = hours % 12 || 12;
 
       setLocalTime(`${hours}:${minutes.toString().padStart(2, "0")} ${ampm}`);
@@ -49,90 +123,29 @@ const Weather = () => {
 
     updateClock();
     const interval = setInterval(updateClock, 1000);
+
     return () => clearInterval(interval);
   }, [data.timezone]);
 
-  const handleInputChange = (e) => setLocation(e.target.value);
+  const getWeatherIcon = (desc) => {
+    if (!desc) return <i className="bx bx-cloud"></i>;
 
-  // SEARCH
-  const search = async () => {
-    if (!location.trim()) return;
+    const type = desc.toLowerCase();
 
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=Imperial&appid=de0af54d43123c94f77d29e171071ec0`;
-
-    try {
-      const response = await fetch(url);
-
-      if (!response.ok) {
-        setData({ notFound: true });
-        setLocation("");
-        setShouldRefocus(true); // ensures cursor returns
-      } else {
-        const weatherData = await response.json();
-        setData(weatherData);
-        setLocation("");
-        setShouldRefocus(true); // ensures cursor returns
-      }
-    } catch (error) {
-      console.error("Search error:", error);
-      setData({ notFound: true });
-      setShouldRefocus(true);
-    }
-  };
-
-  // After rerender → focus the input
-  useEffect(() => {
-    if (shouldRefocus && inputRef.current) {
-      setTimeout(() => {
-        inputRef.current.focus();
-      }, 0);
-      setShouldRefocus(false);
-    }
-  }, [shouldRefocus]);
-
-  const getWeatherIcon = (weatherMain, timezoneOffset) => {
-    if (!weatherMain || !timezoneOffset) return <i className="bx bx-cloud"></i>;
-
-    // Convert to consistent casing
-    const type = weatherMain.toLowerCase();
-
-    // Compute city local hour
-    const localDate = new Date(Date.now() + timezoneOffset * 1000);
-    const hour = localDate.getUTCHours();
-    const isDay = hour >= 6 && hour < 18;
-
-    if (type === "clear") {
-      return isDay
-        ? <i className="bx bxs-sun"></i>
-        : <i className="bx bx-moon"></i>;
-    }
-
-    if (type === "clouds") {
-      return <i className="bx bx-cloud"></i>;
-    }
-
-    if (type === "rain") {
-      return <i className="bx bxs-cloud-rain"></i>;
-    }
-
-    if (type === "thunderstorm") {
-      return <i className="bx bxs-cloud-lightning"></i>;
-    }
-
-    if (type === "snow") {
-      return <i className="bx bxs-cloud-snow"></i>;
-    }
-
-    if (type === "mist" || type === "haze") {
-      return <i className="bx bx-cloud"></i>;
-    }
+    if (type.includes("clear")) return <i className="bx bxs-sun"></i>;
+    if (type.includes("cloud")) return <i className="bx bx-cloud"></i>;
+    if (type.includes("rain")) return <i className="bx bxs-cloud-rain"></i>;
+    if (type.includes("snow")) return <i className="bx bxs-cloud-snow"></i>;
+    if (type.includes("storm")) return <i className="bx bxs-cloud-lightning"></i>;
 
     return <i className="bx bx-cloud"></i>;
   };
 
+  const weatherMain = data.description
+    ? data.description.toLowerCase()
+    : "";
 
-  const weatherMain = data.weather ? data.weather[0].main.toLowerCase() : "";
-  const isRain = weatherMain === "rain";
+  const isRain = weatherMain.includes("rain");
 
   return (
     <div className={`weather weather-${weatherMain}`}>
@@ -142,7 +155,7 @@ const Weather = () => {
       <div className="search">
         <div className="search-top">
           <i className="fa-solid fa-location-dot"></i>
-          <div className="location">{data.name}</div>
+          <div className="location">{data.city}</div>
         </div>
 
         <div className="search-location">
@@ -152,39 +165,70 @@ const Weather = () => {
             placeholder="Enter Location"
             value={location}
             handleChange={handleInputChange}
+            onKeyDown={handleKeyPress}
             ref={inputRef}
           />
-          <i className="fa-solid fa-magnifying-glass" onClick={search}></i>
+
+          <i
+            className="fa-solid fa-magnifying-glass"
+            onClick={search}
+          ></i>
         </div>
       </div>
 
-      {/* Rain animation */}
+      {/* Rain Animation */}
       {isRain && (
         <div className="rain">
-          {[...Array(50)].map((_, i) => (
-            <div
-              key={i}
-              className="drop"
-              style={{
-                left: `${Math.random() * 100}%`,
-                animationDuration: `${0.5 + Math.random()}s`,
-                height: `${50 + Math.random() * 20}px`,
-                opacity: `${0.4 + Math.random() * 0.6}`
-              }}
-            ></div>
+          {[...Array(40)].map((_, i) => (
+            <div key={i} className="drop"></div>
           ))}
         </div>
       )}
 
-      {/* Weather Output */}
-      {data.notFound ? (
-        <div className="not-found">City Not Found 🙁</div>
+      {/* Weather Display */}
+      {data.error ? (
+        <div className="not-found">{data.error}</div>
       ) : (
         <div className="weather-data">
-          {data.weather && getWeatherIcon(data.weather[0].main, data.timezone)}
+          {getWeatherIcon(data.description)}
 
-          <div className="weather-type">{data.weather?.[0].main}</div>
-          <div className="temp">{data.main && `${Math.floor(data.main.temp)}°`}</div>
+          <div className="weather-type">{data.description}</div>
+
+          <div className="temp">
+            {data.temp && `${Math.floor(data.temp)}°`}
+          </div>
+        </div>
+      )}
+
+      {/* HISTORY */}
+      {history.length > 0 && (
+        <div className="weather-history">
+          <div className="history-scroll">
+          <div className="history-header">
+            <span>Recent</span>
+            <button onClick={clearHistory}>Clear</button>
+          </div>
+
+          <ul>
+            {history.map((item) => (
+              <li key={item.id}>
+                <span
+                  className="history-city"
+                  onClick={() => fetchWeatherByCity(item.city)}
+                >
+                  {item.city}
+                </span>
+
+                <button
+                  className="history-delete"
+                  onClick={() => deleteHistory(item.id)}
+                >
+                  ×
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
         </div>
       )}
     </div>
