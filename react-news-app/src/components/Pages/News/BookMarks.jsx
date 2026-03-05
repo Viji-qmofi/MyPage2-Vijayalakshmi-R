@@ -1,7 +1,6 @@
-// BookMarks.jsx
 import React from "react";
 import Modal from "./Modals/Modal";
-import noImg from "../../../assets/images/no-img.png"; 
+import noImg from "../../../assets/images/no-img.png";
 import "./BookMarks.css";
 
 const BookMarks = ({
@@ -10,19 +9,33 @@ const BookMarks = ({
   onClose,
   onSelectArticle,
   onDeleteBookmark,
+  onDeleteAll,     
   onPrev,
   onNext,
-  page
+  page,
 }) => {
   return (
     <Modal show={show} onClose={onClose}>
-      <h2 className="bookmarks-heading">Bookmarked News</h2>
+      {/* ✅ Header Area: title + delete all */}
+      <div className="bookmarks-header">
+        <h2 className="bookmarks-heading">Bookmarked News</h2>
 
+        <button
+          className="delete-all-btn"
+          onClick={onDeleteAll}
+          disabled={!bookmarks.length}
+          title={!bookmarks.length ? "No bookmarks to delete" : "Delete all bookmarks"}
+        >
+          Delete All
+        </button>
+      </div>
+
+      {/* ✅ List */}
       <div className="bookmarks-list">
         {bookmarks.map((article, index) => (
           <div
             className="bookmark-item"
-            key={index}
+            key={article.url || index}
             onClick={() => onSelectArticle(article)}
           >
             <img src={article.image || noImg} alt={article.title} />
@@ -32,7 +45,7 @@ const BookMarks = ({
             <span
               className="delete-button"
               onClick={(e) => {
-                e.stopPropagation(); // prevent opening
+                e.stopPropagation(); // prevent opening modal
                 onDeleteBookmark(article);
               }}
             >
@@ -41,6 +54,8 @@ const BookMarks = ({
           </div>
         ))}
       </div>
+
+      {/* ✅ Pagination */}
       <div className="bookmarks-pagination">
         <button onClick={onPrev} disabled={page === 0}>
           Prev

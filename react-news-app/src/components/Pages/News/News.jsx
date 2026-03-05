@@ -144,6 +144,48 @@ const handleBookmarkClick = async (article) => {
     console.error("Failed to fetch bookmarks", err);
   }
 };
+
+
+
+const handleDeleteAllBookmarks = async () => {
+  const result = await Swal.fire({
+    title: "Delete all bookmarks?",
+    text: "This action cannot be undone.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#6c757d",
+    confirmButtonText: "Yes, delete all",
+    cancelButtonText: "Cancel",
+  });
+
+  if (!result.isConfirmed) return;
+
+  try {
+    await api.delete("/bookmarks/delete-all");
+
+    // refresh bookmarks list
+    fetchBookmarks(0);
+
+    Swal.fire({
+      icon: "success",
+      title: "Deleted!",
+      text: "All bookmarks have been removed.",
+      timer: 1500,
+      showConfirmButton: false,
+    });
+
+  } catch (err) {
+    console.error(err);
+
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: err.response?.data?.message || "Failed to delete bookmarks",
+    });
+  }
+};
+
   /*  Sync selectedCategory with URL (only map)  */
   useEffect(() => {
     if (location.pathname === "/bookmarks") return;
@@ -364,6 +406,7 @@ const handleBookmarkClick = async (article) => {
           setTimeout(() => handleOpenModal(article), 50);
         }}
         onDeleteBookmark={handleBookmarkClick}
+        onDeleteAll={handleDeleteAllBookmarks}
         onPrev={() => fetchBookmarks(Math.max(0, bookmarkPage - 1))}
         onNext={() => fetchBookmarks(bookmarkPage + 1)}
         page={bookmarkPage}
