@@ -68,15 +68,15 @@ export default function Register() {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <h2 className="auth-title">Create Account</h2>
-            <form className="auth-form" onSubmit={handleSubmit}>       
+    <div className="profile-container">
+      <div className="profile-card">
+        <h2 className="profile-title">Create Account</h2>
+            <form className="profile-form" onSubmit={handleSubmit}>       
 
             <input
             ref={usernameRef}
             type="text"
-            className="auth-input"
+            className="profile-input"
             placeholder="Full Name"
             value={form.fullName}
             onChange={(e) =>
@@ -89,7 +89,7 @@ export default function Register() {
 
             <input
             type="email"
-            className="auth-input"
+            className="profile-input"
             placeholder="Email"
             value={form.email}
             onChange={(e) =>
@@ -104,7 +104,7 @@ export default function Register() {
             type="text"
             name="city"
             placeholder="Preferred City"
-            className="auth-input"
+            className="profile-input"
             onChange={(e) =>
                   setForm({ ...form, city: e.target.value })
             }
@@ -114,7 +114,7 @@ export default function Register() {
             type="text"
             name="country"
             placeholder="Country"
-            className="auth-input"
+            className="profile-input"
             onChange={(e) =>
                   setForm({ ...form, country: e.target.value })
             }
@@ -122,7 +122,7 @@ export default function Register() {
 
             <input
             type="password"
-            className="auth-input"
+            className="profile-input"
             placeholder="Password"
             value={form.password}
             onChange={(e) =>
@@ -133,12 +133,12 @@ export default function Register() {
             <span className="error">{errors.password}</span>
             )}
 
-            <button type="submit" className="auth-button">
+            <button type="submit" className="profile-button">
                   Register
             </button>
       </form>
 
-        <div className="auth-link">
+        <div className="profile-link">
           Already have an account?{" "}
           <span onClick={() => navigate("/")}>
             Login

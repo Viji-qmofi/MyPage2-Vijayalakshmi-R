@@ -1,5 +1,5 @@
 /* Full page layout */
-.profile-container {
+.profile1-container {
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -7,6 +7,18 @@
   background: linear-gradient(to right, #b88efc, #6877f4);
   font-family: 'Segoe UI', sans-serif;
   animation: gradientFade 1.5s ease-in-out;
+}
+
+.profile-container {
+  flex: 1;
+  min-height: 80%;;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to right, #001d3d, #6877f4);
+  animation: gradientFade 1.5s ease-in-out;
+  padding: 5rem 1rem 5rem;
 }
 
 /* Glass card */
