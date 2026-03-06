@@ -45,6 +45,7 @@ const categoryMap = {
 };
 
 const News = () => {
+  const BOOKMARK_SIZE = 6;
   const [headline, setHeadline] = useState(null);
   const [news, setNews] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("general");
@@ -120,6 +121,7 @@ const handleBookmarkClick = async (article) => {
       const savedBookmark = res.data.data; // ArticleDto
       setBookmarks((prev) => [savedBookmark, ...prev]); // put newest on top
     }
+    await fetchBookmarks(bookmarkPage, BOOKMARK_SIZE);
   } catch (err) {
     console.error("Bookmark toggle failed", err);
 
@@ -131,7 +133,7 @@ const handleBookmarkClick = async (article) => {
   }
 };
   
-  const fetchBookmarks = async (page = 0, size = bookmarkSize) => {
+  const fetchBookmarks = async (page = 0, size = BOOKMARK_SIZE) => {
   try {
     const res = await api.get("/bookmarks/get", {
       params: { page, size },
@@ -144,6 +146,49 @@ const handleBookmarkClick = async (article) => {
     console.error("Failed to fetch bookmarks", err);
   }
 };
+
+
+
+const handleDeleteAllBookmarks = async () => {
+  const result = await Swal.fire({
+    title: "Delete all bookmarks?",
+    text: "This action cannot be undone.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#6c757d",
+    confirmButtonText: "Yes, delete all",
+    cancelButtonText: "Cancel",
+  });
+
+  if (!result.isConfirmed) return;
+
+  try {
+    await api.delete("/bookmarks/delete-all");
+
+    // refresh bookmarks list
+    fetchBookmarks(0);
+
+    /*Swal.fire({
+      icon: "success",
+      title: "Deleted!",
+      text: "All bookmarks have been removed.",
+      timer: 1500,
+      showConfirmButton: false,
+    });*/
+    navigate("/news");
+
+  } catch (err) {
+    console.error(err);
+
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: err.response?.data?.message || "Failed to delete bookmarks",
+    });
+  }
+};
+
   /*  Sync selectedCategory with URL (only map)  */
   useEffect(() => {
     if (location.pathname === "/bookmarks") return;
@@ -364,6 +409,7 @@ const handleBookmarkClick = async (article) => {
           setTimeout(() => handleOpenModal(article), 50);
         }}
         onDeleteBookmark={handleBookmarkClick}
+        onDeleteAll={handleDeleteAllBookmarks}
         onPrev={() => fetchBookmarks(Math.max(0, bookmarkPage - 1))}
         onNext={() => fetchBookmarks(bookmarkPage + 1)}
         page={bookmarkPage}

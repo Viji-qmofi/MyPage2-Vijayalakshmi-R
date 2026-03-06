@@ -55,7 +55,7 @@ public class BookmarkController {
     @GetMapping("/get")
     public ResponseEntity<ApiResponse<List<ArticleDto>>> getBookmarks(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "6") int size
     ) {
         String email = SecurityUtil.getCurrentUserEmail();
         Page<Bookmark> bookmarksPage = bookmarkService.getBookmarks(email, page, size);

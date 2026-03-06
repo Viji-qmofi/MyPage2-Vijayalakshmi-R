@@ -40,6 +40,18 @@ export const AuthProvider = ({ children }) => {
     setToken("");
   };
 
+  useEffect(() => {
+    const handleAuthExpired = () => {
+      logout();
+    };
+
+    window.addEventListener("auth-expired", handleAuthExpired);
+
+    return () => {
+      window.removeEventListener("auth-expired", handleAuthExpired);
+    };
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{

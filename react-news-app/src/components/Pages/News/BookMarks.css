@@ -7,6 +7,34 @@
   margin-bottom: 2rem;
 }
 
+.bookmarks-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.delete-all-btn {
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 0.6rem;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.delete-all-btn:hover {
+  background: #d93636;
+}
+
+.delete-all-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .bookmarks-list {
   display: flex;
   flex-direction: column;
