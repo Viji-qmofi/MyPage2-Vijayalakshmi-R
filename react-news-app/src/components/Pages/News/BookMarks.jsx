@@ -2,6 +2,7 @@ import React from "react";
 import Modal from "./Modals/Modal";
 import noImg from "../../../assets/images/no-img.png";
 import "./BookMarks.css";
+import { Navigate, useNavigate } from "react-router";
 
 const BookMarks = ({
   show,
@@ -14,6 +15,7 @@ const BookMarks = ({
   onNext,
   page,
 }) => {
+  const navigate = useNavigate();
   return (
     <Modal show={show} onClose={onClose}>
       {/* ✅ Header Area: title + delete all */}
@@ -25,6 +27,7 @@ const BookMarks = ({
           onClick={onDeleteAll}
           disabled={!bookmarks.length}
           title={!bookmarks.length ? "No bookmarks to delete" : "Delete all bookmarks"}
+          
         >
           <i className="fa-solid fa-trash"></i>
           Delete All
