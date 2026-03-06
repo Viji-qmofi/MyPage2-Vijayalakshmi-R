@@ -45,6 +45,7 @@ const categoryMap = {
 };
 
 const News = () => {
+  const BOOKMARK_SIZE = 6;
   const [headline, setHeadline] = useState(null);
   const [news, setNews] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("general");
@@ -120,6 +121,7 @@ const handleBookmarkClick = async (article) => {
       const savedBookmark = res.data.data; // ArticleDto
       setBookmarks((prev) => [savedBookmark, ...prev]); // put newest on top
     }
+    await fetchBookmarks(bookmarkPage, BOOKMARK_SIZE);
   } catch (err) {
     console.error("Bookmark toggle failed", err);
 
@@ -131,7 +133,7 @@ const handleBookmarkClick = async (article) => {
   }
 };
   
-  const fetchBookmarks = async (page = 0, size = bookmarkSize) => {
+  const fetchBookmarks = async (page = 0, size = BOOKMARK_SIZE) => {
   try {
     const res = await api.get("/bookmarks/get", {
       params: { page, size },

@@ -26,6 +26,7 @@ const BookMarks = ({
           disabled={!bookmarks.length}
           title={!bookmarks.length ? "No bookmarks to delete" : "Delete all bookmarks"}
         >
+          <i className="fa-solid fa-trash"></i>
           Delete All
         </button>
       </div>
