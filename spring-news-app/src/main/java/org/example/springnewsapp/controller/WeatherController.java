@@ -55,7 +55,11 @@ public class WeatherController {
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
-            WeatherResponse weather = weatherService.getWeather(user.getCity());
+            String targetCity = (user.getCity() == null || user.getCity().isBlank())
+                    ? "Chicago"
+                    : user.getCity();
+
+            WeatherResponse weather = weatherService.getWeather(targetCity);
             return ResponseEntity.ok(weather);
 
         } catch (Exception e) {

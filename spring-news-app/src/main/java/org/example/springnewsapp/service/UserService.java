@@ -96,5 +96,23 @@ import java.util.stream.Collectors;
             );
         }
 
+        public UserResponse getUserProfile(String email) {
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            Set<String> roleNames = user.getRoles().stream()
+                    .map(role -> role.getRoleName().name())
+                    .collect(Collectors.toSet());
+
+            return new UserResponse(
+                    user.getEmail(),
+                    user.getFullName(),
+                    user.getCity(),
+                    user.getCountry(),
+                    user.getProfilePicUrl(),
+                    roleNames
+            );
+        }
+
     }
 

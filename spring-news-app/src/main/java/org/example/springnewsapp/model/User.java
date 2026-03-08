@@ -2,7 +2,6 @@ package org.example.springnewsapp.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import org.jspecify.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.List;
@@ -17,15 +16,21 @@ public class User {
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private String email;   // LOGIN FIELD
+    private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String password;
 
     private String fullName;
     private String city;
     private String country;
     private String profilePicUrl;
+
+    @Column(nullable = true)
+    private String provider;   // LOCAL, GOOGLE, GITHUB
+
+    @Column(nullable = true)
+    private String providerId; // provider user id
 
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
@@ -42,11 +47,8 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
-
     public User() {
     }
-
-
 
     public User(String email, String password, String fullName, String city, String country, String profilePicUrl) {
         this.email = email;
@@ -121,6 +123,22 @@ public class User {
         this.profilePicUrl = profilePicUrl;
     }
 
+    public String getProvider() {
+        return provider;
+    }
+
+    public void setProvider(String provider) {
+        this.provider = provider;
+    }
+
+    public String getProviderId() {
+        return providerId;
+    }
+
+    public void setProviderId(String providerId) {
+        this.providerId = providerId;
+    }
+
     public Set<Role> getRoles() {
         return roles;
     }
@@ -133,4 +151,3 @@ public class User {
         this.roles.add(role);
     }
 }
-
