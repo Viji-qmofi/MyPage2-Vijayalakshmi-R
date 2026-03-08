@@ -4,6 +4,7 @@ import org.example.springnewsapp.dto.UpdateProfileRequest;
 import org.example.springnewsapp.dto.UserResponse;
 import org.example.springnewsapp.model.User;
 import org.example.springnewsapp.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,6 +23,8 @@ import java.util.stream.Collectors;
     public class UserService {
 
         private final UserRepository userRepository;
+        @Value("${file.upload-dir}")
+        private String uploadDir;
 
         public UserService(UserRepository userRepository) {
             this.userRepository = userRepository;
@@ -37,6 +40,7 @@ import java.util.stream.Collectors;
         }
 
         public UserResponse updateProfile(String email, UpdateProfileRequest request, MultipartFile profilePic) {
+
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -44,41 +48,47 @@ import java.util.stream.Collectors;
             user.setCity(request.getCity());
             user.setCountry(request.getCountry());
 
-            // ONLY run file logic if a new file exists
             if (profilePic != null && !profilePic.isEmpty()) {
 
-                String fileName = System.currentTimeMillis() + "_" + profilePic.getOriginalFilename();
-
-                // Handle profile pic
-                Path uploadPath = Paths.get("C:/Users/vijir/MyPage2-Vijayalakshmi-R/uploads");
+                Path uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
 
                 try {
 
-                    // Ensure directory exists
+                    // Ensure upload directory exists
                     if (!Files.exists(uploadPath)) {
                         Files.createDirectories(uploadPath);
                     }
 
-                   // String fileName = System.currentTimeMillis() + "_" + profilePic.getOriginalFilename();
+                    // Delete old profile picture if exists
+                    if (user.getProfilePicUrl() != null && !user.getProfilePicUrl().isBlank()) {
+
+                        String oldFileName = user.getProfilePicUrl().replace("/uploads/", "");
+                        Path oldFilePath = uploadPath.resolve(oldFileName);
+
+                        Files.deleteIfExists(oldFilePath);
+                    }
+
+                    // Generate unique filename using UUID
+                    String fileName = UUID.randomUUID() + "_" + profilePic.getOriginalFilename();
 
                     Path filePath = uploadPath.resolve(fileName);
 
                     System.out.println("Saving profile pic to: " + filePath);
 
-                    // ✅ Replace if already exists
-                    Files.copy(profilePic.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                    Files.copy(profilePic.getInputStream(), filePath);
 
+                    // Save URL for frontend
                     user.setProfilePicUrl("/uploads/" + fileName);
 
                 } catch (IOException e) {
-                    e.printStackTrace();  // VERY IMPORTANT for debugging
+                    e.printStackTrace();
                     throw new RuntimeException("Failed to store file", e);
                 }
             }
 
             userRepository.save(user);
 
-            return mapToUserResponse(user);  // make sure UserResponse has profilePicUrl field
+            return mapToUserResponse(user);
         }
 
         private UserResponse mapToUserResponse(User user) {

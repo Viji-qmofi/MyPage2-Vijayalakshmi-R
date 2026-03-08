@@ -7,7 +7,7 @@ import News from "./components/Pages/News/News";
 import ContactUs from "./components/Pages/Contact/ContactUs";
 import Footer from "./components/Common/Footer";
 import Header from "./components/Common/Header";
-import Profile from "./components/Pages/News/Profile";
+import Profile from "./components/Pages/News/EditProfile";
 import ForgotPassword from "./components/Pages/ForgotPassword";
 import ResetPassword from "./components/Pages/ResetPassword";
 import OAuthSuccess from "./components/Pages/OAuthSuccess";

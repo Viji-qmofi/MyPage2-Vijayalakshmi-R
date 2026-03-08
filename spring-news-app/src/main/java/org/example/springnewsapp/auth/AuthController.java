@@ -61,7 +61,7 @@ public class AuthController {
     @PutMapping("/update-profile")
     public ResponseEntity<UserResponse> updateProfile(
             @AuthenticationPrincipal UserDetails userDetails,
-            @ModelAttribute UpdateProfileRequest request,  // note @ModelAttribute
+            @ModelAttribute UpdateProfileRequest request,
             @RequestParam(value = "profilePic", required = false) MultipartFile profilePic) {
 
         UserResponse updatedUser = userService.updateProfile(userDetails.getUsername(), request, profilePic);
