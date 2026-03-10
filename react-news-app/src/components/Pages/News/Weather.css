@@ -5,40 +5,46 @@
   background-color: #111214;
   border-radius: 1rem;
   padding: 2rem 1.5rem;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 1.6rem;
+
   position: relative;
   overflow: hidden;
 }
 
-.rain {
+/* ---------------- RAIN ANIMATION ---------------- */
+
+.rain-overlay {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  z-index: 0;
+  z-index: 2;
 }
 
 .drop {
   position: absolute;
   top: -10%;
   width: 2px;
-  height: 15px;
-  background: rgba(255, 255, 255, 0.8);
+  height: 22px;
+  background: rgba(255,255,255,0.8);
   animation: fall linear infinite;
   border-radius: 50%;
+  transform: rotate(10deg);
+  
 }
 
-/* Randomize positions and speeds */
 .drop:nth-child(odd) {
   left: calc(2% * var(--i));
-  animation-duration: calc(0.5s + var(--i) * 0.05s);
+  animation-duration: calc(0.6s + var(--i) * 0.05s);
 }
+
 .drop:nth-child(even) {
   left: calc(2% * var(--i));
-  animation-duration: calc(0.7s + var(--i) * 0.05s);
+  animation-duration: calc(0.8s + var(--i) * 0.05s);
 }
 
 @keyframes fall {
@@ -52,141 +58,8 @@
   }
 }
 
-.weather-clear .weather-data i {
-  animation: sun-glow 3s infinite ease-in-out;
-}
+/* ---------------- CLOCK ---------------- */
 
-@keyframes sun-glow {
-  0% {
-    transform: scale(1);
-    filter: brightness(1);
-  }
-  50% {
-    transform: scale(1.15);
-    filter: brightness(1.4);
-  }
-  100% {
-    transform: scale(1);
-    filter: brightness(1);
-  }
-}
-
-.weather-clear .weather-data i {
-  animation: moon-glow 3s infinite ease-in-out;
-  color: #ffc87c;
-}
-
-@keyframes moon-glow {
-  0% {
-    transform: scale(1);
-    filter: brightness(1);
-  }
-  50% {
-    transform: scale(1.15);
-    filter: brightness(1.4);
-  }
-  100% {
-    transform: scale(1);
-    filter: brightness(1);
-  }
-}
-
-.weather-clouds .weather-data i {
-  animation: cloud-float 4s infinite ease-in-out;
-}
-
-@keyframes cloud-float {
-  0% {
-    transform: translateX(0);
-  }
-  50% {
-    transform: translateX(12px);
-  }
-  100% {
-    transform: translateX(0);
-  }
-}
-
-.weather-mist .weather-data i {
-  animation: cloud-float 4s infinite ease-in-out;
-}
-
-@keyframes cloud-float {
-  0% {
-    transform: translateX(0);
-  }
-  50% {
-    transform: translateX(12px);
-  }
-  100% {
-    transform: translateX(0);
-  }
-}
-
-.weather-haze .weather-data i {
-  animation: cloud-float 4s infinite ease-in-out;
-}
-
-@keyframes cloud-float {
-  0% {
-    transform: translateX(0);
-  }
-  50% {
-    transform: translateX(12px);
-  }
-  100% {
-    transform: translateX(0);
-  }
-}
-
-.weather-thunderstorm {
-  animation: lightning-flash 2.5s infinite;
-}
-
-@keyframes lightning-flash {
-  0%,
-  95%,
-  100% {
-    background-color: transparent;
-  }
-  96% {
-    background-color: rgba(255, 255, 255, 0.4);
-  }
-  97% {
-    background-color: transparent;
-  }
-  98% {
-    background-color: rgba(255, 255, 255, 0.6);
-  }
-}
-
-.weather-snow {
-  position: relative;
-  overflow: hidden;
-}
-
-.weather-snow::before {
-  content: "❄ ❄ ❄ ❄ ❄";
-  position: absolute;
-  top: -10%;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 1.2rem;
-  animation: snow-fall 4s linear infinite;
-}
-
-@keyframes snow-fall {
-  0% {
-    top: -10%;
-    opacity: 1;
-  }
-  100% {
-    top: 110%;
-    opacity: 0.5;
-  }
-}
-
-/* clock */
 .city-time {
   position: absolute;
   top: 1rem;
@@ -194,16 +67,19 @@
   font-size: 1.3rem;
   color: #eee;
   opacity: 0.9;
+  z-index: 3;
 }
 
-/* search section */
+/* ---------------- SEARCH ---------------- */
 
 .search {
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  z-index: 1;
+
+  position: relative;
+  z-index: 3;
 }
 
 .search-top {
@@ -234,12 +110,18 @@
 .search-location input {
   width: 220px;
   padding: 6px 28px 6px 4px;
+
   border: none;
   border-bottom: 1px solid #aaa;
   background: transparent;
+
   outline: none;
   font-size: 1.4rem;
   color: #fff;
+}
+
+.search-location input:focus {
+  border-bottom: 1px solid #fff;
 }
 
 .search-location input::placeholder {
@@ -259,12 +141,17 @@
 .search-location i:hover {
   color: #fff;
 }
+
+/* ---------------- WEATHER DATA ---------------- */
+
 .weather-data {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: .8rem;
-  z-index: 1;
+
+  position: relative;
+  z-index: 3;
 }
 
 .weather-data i {
@@ -298,7 +185,7 @@
   color: #ddd;
 }
 
-/* error */
+/* ---------------- ERROR ---------------- */
 
 .not-found {
   font-family: "Comfortaa", sans-serif;
@@ -306,15 +193,18 @@
   color: #ddd;
 }
 
-/* HISTORY */
+/* ---------------- HISTORY ---------------- */
 
 .weather-history {
   width: 250px;
   display: flex;
   flex-direction: column;
-  flex: 1;
+
   min-height: 0;
   font-family: "Comfortaa", sans-serif;
+
+  position: relative;
+  z-index: 3;
 }
 
 .history-header {
@@ -335,15 +225,14 @@
   color: #fff;
 }
 
-/* scroll area */
-
 .history-scroll {
-  flex: 1;
+  max-height: 120px;
   overflow-y: auto;
+  
 }
 
 .history-scroll::-webkit-scrollbar {
-  width: 5px;
+  display: none;
 }
 
 .history-scroll::-webkit-scrollbar-thumb {
@@ -376,12 +265,13 @@
   border: none;
   color: #777;
   cursor: pointer;
-  
 }
 
 .history-delete:hover {
   color: #ff6b6b;
 }
+
+/* ---------------- MOBILE ---------------- */
 
 @media (max-width: 768px) {
   .weather {
