@@ -141,14 +141,25 @@ const Weather = () => {
     return <i className="bx bx-cloud"></i>;
   };
 
-  const weatherMain = data.description
-    ? data.description.toLowerCase()
-    : "";
+  const weatherDesc = data.description ? data.description.toLowerCase() : "";
 
-  const isRain = weatherMain.includes("rain");
+const getWeatherClass = (desc) => {
+  if (!desc) return "default";
+  if (desc.includes("thunderstorm") || desc.includes("storm")) return "thunderstorm";
+  if (desc.includes("rain") || desc.includes("drizzle")) return "rain";
+  if (desc.includes("snow")) return "snow";
+  if (desc.includes("clear")) return "clear";
+  if (desc.includes("cloud")) return "clouds";
+  if (desc.includes("mist")) return "mist";
+  if (desc.includes("haze")) return "haze";
+  return "default";
+};
 
-  return (
-    <div className={`weather weather-${weatherMain}`}>
+const weatherClass = getWeatherClass(weatherDesc);
+const isRain = weatherClass === "rain";
+
+return (
+    <div className={`weather weather-${weatherClass}`}>
       <div className="city-time">{localTime}</div>
 
       {/* Search */}
@@ -167,6 +178,7 @@ const Weather = () => {
             handleChange={handleInputChange}
             onKeyDown={handleKeyPress}
             ref={inputRef}
+            autoComplete="off"
           />
 
           <i
@@ -178,12 +190,12 @@ const Weather = () => {
 
       {/* Rain Animation */}
       {isRain && (
-        <div className="rain">
+        <div className="rain-overlay">
           {[...Array(40)].map((_, i) => (
-            <div key={i} className="drop"></div>
+            <div key={i} className="drop" style={{ "--i": i }}></div>
           ))}
         </div>
-      )}
+      )} 
 
       {/* Weather Display */}
       {data.error ? (

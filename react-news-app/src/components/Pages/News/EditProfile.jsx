@@ -5,7 +5,8 @@ import api from "../../../api/axios.js";
 import { AuthContext } from "../../../context/AuthContext.jsx";
 import "../../../styles/Auth.css";
 
-export default function Profile() {
+
+export default function EditProfile() {
   const { user, login } = useContext(AuthContext);
   const navigate = useNavigate();
   const nameRef = useRef(null);

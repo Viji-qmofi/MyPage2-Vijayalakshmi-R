@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <footer className="news-footer">
       <p><span>MyPage</span></p>
-      <p>&copy; All Right Reserved. By Code and React.</p>
+      <p>Powered by SpringBoot & React &copy; {new Date().getFullYear()} MyPage Inc</p>
     </footer>
   );
 };

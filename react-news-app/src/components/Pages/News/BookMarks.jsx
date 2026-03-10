@@ -1,8 +1,7 @@
-import React from "react";
 import Modal from "./Modals/Modal";
 import noImg from "../../../assets/images/no-img.png";
 import "./BookMarks.css";
-import { Navigate, useNavigate } from "react-router";
+
 
 const BookMarks = ({
   show,
@@ -15,10 +14,10 @@ const BookMarks = ({
   onNext,
   page,
 }) => {
-  const navigate = useNavigate();
+  
   return (
     <Modal show={show} onClose={onClose}>
-      {/* ✅ Header Area: title + delete all */}
+      {/* Header Area: title + delete all */}
       <div className="bookmarks-header">
         <h2 className="bookmarks-heading">Bookmarked News</h2>
 
@@ -34,7 +33,7 @@ const BookMarks = ({
         </button>
       </div>
 
-      {/* ✅ List */}
+      {/* Bookmarks List */}
       <div className="bookmarks-list">
         {bookmarks.map((article, index) => (
           <div
@@ -59,7 +58,7 @@ const BookMarks = ({
         ))}
       </div>
 
-      {/* ✅ Pagination */}
+      {/* Pagination */}
       <div className="bookmarks-pagination">
         <button onClick={onPrev} disabled={page === 0}>
           Prev

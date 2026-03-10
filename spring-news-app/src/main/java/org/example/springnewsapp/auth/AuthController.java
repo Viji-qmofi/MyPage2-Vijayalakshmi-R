@@ -1,7 +1,8 @@
 package org.example.springnewsapp.auth;
-
-
-
+import org.example.springnewsapp.dto.ForgotPasswordRequest;
+import org.example.springnewsapp.dto.ResetPasswordRequest;
+import org.example.springnewsapp.dto.ApiResponse;
+import org.example.springnewsapp.service.PasswordResetService;
 import jakarta.validation.Valid;
 import org.example.springnewsapp.dto.UpdateProfileRequest;
 import org.example.springnewsapp.dto.UserResponse;
@@ -23,11 +24,12 @@ public class AuthController {
 
     private final AuthService authService;
     private final UserService userService;
+    private final PasswordResetService passwordResetService;
 
-    public AuthController(AuthService authService, UserService userService) {
-
+    public AuthController(AuthService authService, UserService userService, PasswordResetService passwordResetService) {
         this.authService = authService;
         this.userService = userService;
+        this.passwordResetService = passwordResetService;
     }
 
     @PostMapping("/register")
@@ -59,11 +61,29 @@ public class AuthController {
     @PutMapping("/update-profile")
     public ResponseEntity<UserResponse> updateProfile(
             @AuthenticationPrincipal UserDetails userDetails,
-            @ModelAttribute UpdateProfileRequest request,  // note @ModelAttribute
+            @ModelAttribute UpdateProfileRequest request,
             @RequestParam(value = "profilePic", required = false) MultipartFile profilePic) {
 
         UserResponse updatedUser = userService.updateProfile(userDetails.getUsername(), request, profilePic);
         return ResponseEntity.ok(updatedUser);
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ApiResponse<Void>> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        passwordResetService.forgotPassword(request.getEmail());
+        return ResponseEntity.ok(new ApiResponse<>("If that email is registered, a password reset link has been sent."));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<ApiResponse<Void>> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        passwordResetService.resetPassword(request.getToken(), request.getPassword());
+        return ResponseEntity.ok(new ApiResponse<>("Password reset successful."));
+    }
+
+    @GetMapping("/oauth-user")
+    public ResponseEntity<UserResponse> getOAuthUser(@AuthenticationPrincipal UserDetails userDetails) {
+        UserResponse user = userService.getUserProfile(userDetails.getUsername());
+        return ResponseEntity.ok(user);
     }
 
 }

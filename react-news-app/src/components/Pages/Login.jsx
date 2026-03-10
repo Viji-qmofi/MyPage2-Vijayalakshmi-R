@@ -17,7 +17,6 @@ export default function Login() {
   const [errors, setErrors] = useState({});
   const usernameRef = useRef(null);
 
-  // Auto focus
   useEffect(() => {
     usernameRef.current.focus();
   }, []);
@@ -25,13 +24,11 @@ export default function Login() {
   const validate = () => {
     const newErrors = {};
 
-    if (!form.email.trim())
-      newErrors.email = "Email is required";
+    if (!form.email.trim()) newErrors.email = "Email is required";
     else if (!/\S+@\S+\.\S+/.test(form.email))
       newErrors.email = "Invalid email format";
 
-    if (!form.password.trim())
-      newErrors.password = "Password is required";
+    if (!form.password.trim()) newErrors.password = "Password is required";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -43,26 +40,24 @@ export default function Login() {
 
     try {
       const response = await api.post("/auth/login", form);
-
-      
-
-      console.log("Login API response:", response.data);
-
       const { token, user } = response.data;
-
-      // Save user & token in context & localStorage
       login(user, token);
-
-      // Navigate to News page
       navigate("/news");
     } catch (error) {
-      console.error("Login error:", error);
       Swal.fire({
         icon: "error",
         title: "Login Failed",
         text: error.response?.data?.message || "Invalid email or password",
       });
     }
+  };
+
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:8080/oauth2/authorization/google";
+  };
+
+  const handleGithubLogin = () => {
+    window.location.href = "http://localhost:8080/oauth2/authorization/github";
   };
 
   return (
@@ -94,6 +89,22 @@ export default function Login() {
             Login
           </button>
         </form>
+
+        <div className="profile-buttons" style={{ marginTop: "12px", display: "flex", flexDirection: "column", gap: "10px" }}>
+          <button type="button" className="profile-button" onClick={handleGoogleLogin}>
+            Continue with Google
+          </button>
+
+          <button type="button" className="profile-button" onClick={handleGithubLogin}>
+            Continue with GitHub
+          </button>
+        </div>
+
+        <div className="profile-link">
+          <span onClick={() => navigate("/forgot-password")}>
+            Forgot Password?
+          </span>
+        </div>
 
         <div className="profile-link">
           Don't have an account?{" "}

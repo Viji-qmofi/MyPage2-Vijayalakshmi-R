@@ -7,7 +7,6 @@ import Modal from "./Modals/Modal";
 import BookMarks from "./BookMarks";
 import Weather from "./Weather";
 import Calendar from "./Calendar";
-import userImg from "../../../assets/images/user.jpg";
 import noImg from "../../../assets/images/no-img.png";
 import Loader from "../../Common/Loader";
 import api from "../../../api/axios"; 
@@ -169,13 +168,13 @@ const handleDeleteAllBookmarks = async () => {
     // refresh bookmarks list
     fetchBookmarks(0);
 
-    /*Swal.fire({
+    Swal.fire({
       icon: "success",
       title: "Deleted!",
       text: "All bookmarks have been removed.",
       timer: 1500,
       showConfirmButton: false,
-    });*/
+    });
     navigate("/news");
 
   } catch (err) {

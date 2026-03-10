@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
     // Handle generic runtime exceptions
     @ExceptionHandler(RuntimeException.class)
     protected ResponseEntity<ApiResponse<String>> handleRuntime(RuntimeException ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        return ResponseEntity.badRequest()
                 .body(new ApiResponse<>(ex.getMessage(), null));
     }
     // Handle validation errors
