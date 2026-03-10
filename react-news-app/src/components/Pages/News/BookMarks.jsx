@@ -66,7 +66,7 @@ const BookMarks = ({
 
         <span>Page {page + 1}</span>
 
-        <button onClick={onNext} disabled={bookmarks.length <= 6}>
+        <button onClick={onNext} disabled={bookmarks.length < 6}>
           Next
         </button>
       </div>
