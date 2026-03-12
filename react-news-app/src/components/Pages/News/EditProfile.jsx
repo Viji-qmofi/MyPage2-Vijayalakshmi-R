@@ -66,7 +66,7 @@ export default function EditProfile() {
       });
 
       // Update context user immediately with new backend data
-      login(res.data);
+      login(res.data.data);
 
       Swal.fire({
         icon: "success",

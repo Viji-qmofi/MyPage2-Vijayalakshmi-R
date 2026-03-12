@@ -6,9 +6,9 @@ public class UserResponse {
 
     private String email;
     private String fullName;
-    private String city;          // add this
-    private String country;       // add this
-    private String profilePicUrl; // add this
+    private String city;
+    private String country;
+    private String profilePicUrl;
     private Set<String> roles;
 
     public UserResponse(String email, String fullName, String city, String country,

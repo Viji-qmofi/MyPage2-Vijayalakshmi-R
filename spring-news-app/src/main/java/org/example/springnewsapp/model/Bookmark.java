@@ -3,7 +3,6 @@ package org.example.springnewsapp.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import net.minidev.json.annotate.JsonIgnore;
 
 @Entity
 @Table(name = "bookmarks", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "url"}))

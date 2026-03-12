@@ -12,11 +12,12 @@ public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
 
     Optional<Bookmark> findByUser_EmailAndUrl(String email, String url);
 
-    List<Bookmark> findByUser_Email(String email);
-
     Page<Bookmark> findByUser_Email(String email, Pageable pageable);
 
     void deleteByUser_EmailAndUrl(String email, String url);
 
     void deleteByUser_Email(String email);
+
+    List<Bookmark> findByUser_EmailOrderByPublishedAtDesc(String email);
+
 }

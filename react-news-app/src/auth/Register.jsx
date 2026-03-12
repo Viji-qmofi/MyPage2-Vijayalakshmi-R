@@ -1,11 +1,13 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import { useNavigate } from "react-router";
 import Swal from "sweetalert2";
-import api from "../../api/axios.js"
-import "../../styles/Auth.css";
+import api from "../api/axios.js"
+import "../styles/Auth.css";
+import { AuthContext } from "../context/AuthContext";
 
 export default function Register() {
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext);  
 
   const [form, setForm] = useState({
     fullName: "",
@@ -41,72 +43,86 @@ export default function Register() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validate()) return;
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!validate()) return;
 
-    try {
-      await api.post("/auth/register", form);
+  try {
+    const res = await api.post("/auth/register", form);
+    
+    const token = res.data.data.token;
 
-      await Swal.fire({
-        icon: "success",
-        title: "Registration Successful",
-        text: "Please login to continue",
-        confirmButtonColor: "#6877f4",
-      });
+    // Use AuthContext instead of localStorage directly
+    login(
+      {
+        email: form.email,
+        fullName: form.fullName,
+        city: form.city,
+        country: form.country,
+      },
+      token
+    );
 
-      navigate("/");
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Registration Failed",
-        text:
-          error.response?.data?.message ||
-          "Something went wrong",
-      });
-    }
-  };
+    await Swal.fire({
+      icon: "success",
+      title: "Registration Successful",
+      text: "Welcome!",
+      confirmButtonColor: "#6877f4",
+    });
+
+    navigate("/news");
+
+  } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: "Registration Failed",
+      text:
+        error.response?.data?.message ||
+        "Something went wrong",
+    });
+  }
+};
 
   return (
     <div className="profile-container">
       <div className="profile-card">
         <h2 className="profile-title">Create Account</h2>
-            <form className="profile-form" onSubmit={handleSubmit}>       
+        <form className="profile-form" onSubmit={handleSubmit}>
 
-            <input
+          <input
             ref={usernameRef}
             type="text"
             className="profile-input"
             placeholder="Full Name"
             value={form.fullName}
             onChange={(e) =>
-                  setForm({ ...form, fullName: e.target.value })
+              setForm({ ...form, fullName: e.target.value })
             }
-            />
-            {errors.fullName && (
+          />
+          {errors.fullName && (
             <span className="error">{errors.fullName}</span>
-            )}
+          )}
 
-            <input
+          <input
             type="email"
             className="profile-input"
             placeholder="Email"
             value={form.email}
             onChange={(e) =>
-                  setForm({ ...form, email: e.target.value })
+              setForm({ ...form, email: e.target.value })
             }
-            />
-            {errors.email && (
+          />
+          {errors.email && (
             <span className="error">{errors.email}</span>
-            )}
+          )}
 
-            <input
+          <input
             type="text"
             name="city"
             placeholder="Preferred City"
             className="profile-input"
             onChange={(e) =>
-                  setForm({ ...form, city: e.target.value })
+              setForm({ ...form, city: e.target.value })
             }
           />
 
@@ -116,27 +132,27 @@ export default function Register() {
             placeholder="Country"
             className="profile-input"
             onChange={(e) =>
-                  setForm({ ...form, country: e.target.value })
+              setForm({ ...form, country: e.target.value })
             }
           />
 
-            <input
+          <input
             type="password"
             className="profile-input"
             placeholder="Password"
             value={form.password}
             onChange={(e) =>
-                  setForm({ ...form, password: e.target.value })
+              setForm({ ...form, password: e.target.value })
             }
-            />
-            {errors.password && (
+          />
+          {errors.password && (
             <span className="error">{errors.password}</span>
-            )}
+          )}
 
-            <button type="submit" className="profile-button">
-                  Register
-            </button>
-      </form>
+          <button type="submit" className="profile-button">
+            Register
+          </button>
+        </form>
 
         <div className="profile-link">
           Already have an account?{" "}

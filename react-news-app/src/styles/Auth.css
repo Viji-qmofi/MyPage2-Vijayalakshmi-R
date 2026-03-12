@@ -1,7 +1,6 @@
-
 .profile-container {
   flex: 1;
-  min-height: 80%;;
+  min-height: 80%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -11,13 +10,13 @@
   background-position: center;
   background-repeat: no-repeat;
   animation: gradientFade 1.5s ease-in-out;
-  padding: 5rem 1rem 5rem;
+  padding: 5rem 1rem;
 }
-
 
 /* Glass card */
 .profile-card {
-  width: 380px;
+  width: 100%;
+  max-width: 380px;
   padding: 40px;
   border-radius: 16px;
   backdrop-filter: blur(15px);
@@ -46,7 +45,7 @@
   border: none;
   outline: none;
   font-size: 14px;
-  color:black;
+  color: black;
   background: rgba(255, 255, 255, 0.8);
   transition: all 0.3s ease;
 }
@@ -60,7 +59,7 @@
   display: flex;
   gap: 10px;
 }
-/* Button */
+
 .profile-button {
   width: 100%;
   padding: 12px;
@@ -113,11 +112,84 @@
 }
 
 .profile-pic {
-  width: 120px;          /* fixed size */
+  width: 120px;
   height: 120px;
-  border-radius: 50%;    /* circular */
-  object-fit: cover;     /* crop properly */
+  border-radius: 50%;
+  object-fit: cover;
   border: 2px solid #ddd;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1024px) {
+  .profile-card {
+    margin-left: 80px;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-container {
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1.5rem;
+  }
+
+  .profile-card {
+    margin-left: 0;
+    max-width: 420px;
+    padding: 32px 24px;
+  }
+
+  .profile-title {
+    font-size: 24px;
+  }
+
+  .profile-buttons {
+    flex-direction: column;
+  }
+
+  .profile-pic {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-container {
+    padding: 2rem 1rem;
+    min-height: 100%;
+  }
+
+  .profile-card {
+    max-width: 100%;
+    padding: 24px 18px;
+    border-radius: 12px;
+  }
+
+  .profile-title {
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+
+  .profile-input {
+    font-size: 13px;
+    padding: 10px;
+    margin-bottom: 14px;
+  }
+
+  .profile-button {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .profile-link {
+    font-size: 13px;
+  }
+
+  .profile-pic {
+    width: 85px;
+    height: 85px;
+  }
 }
 
 /* Animations */

@@ -28,7 +28,7 @@ public class WeatherController {
 
     /**
      * GET /api/weather?city=Chicago
-     * If no city provided, defaults to Chicago for guests
+     * If no city provided, defaults to Chicago for guests and OAuth users
      */
     @GetMapping
     public ResponseEntity<WeatherResponse> getWeather(@RequestParam(required = false) String city) {
@@ -43,7 +43,6 @@ public class WeatherController {
             ));
         }
     }
-
     /**
      * GET /api/weather/me
      * Fetch weather based on logged-in user's city

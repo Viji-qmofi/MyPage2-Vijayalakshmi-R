@@ -1,13 +1,16 @@
 .news-header {
   width: 100%;
   min-height: 7rem;
-  background-image: url("../../assets/images/news.jpg"); /* Define your colors */
+  background-image: url("../../assets/images/news.jpg"); 
   border-radius: 1rem 1rem 0 0;
   display: flex;
   align-items: center;
-  justify-content: center;
-  text-align: center;
+  justify-content: space-between;
   padding: 0 4rem;
+}
+
+.auth-header {
+  justify-content: center;
 }
 
 .logo {
@@ -17,27 +20,22 @@
   letter-spacing: 0.2rem;
   
 }
-/* Right side */
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 10rem;
-}
 
 /* Logout button */
 .logout-btn {
-  position: absolute;
-  right: 10rem;
   color: red;
   border: none;
   padding: 6px 12px;
-  margin-left: 10px;
   border-radius: 6px;
   cursor: pointer;
+  font-size: 1.4rem;
+  font-family: "Bebas Neue", sans-serif;
+  text-transform:none;
 }
 
 .logout-btn:hover {
-  background: blue;
+  background-color:#111214;
+  color: white;
 }
 
 
@@ -49,12 +47,22 @@
   .logo {
     font-size: 2.5rem;
   }
+
+  .logout-btn {
+    align-self: flex-end;
+  }
+
 }
 
 @media (max-width: 768px) {
   .news-header {
     padding: 0;
     margin-bottom: 2rem; /* less margin = moves up */
+  }
+
+   .logout-btn {
+    font-size: 1.2rem;
+    padding: 5px 10px;
   }
 
 }

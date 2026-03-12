@@ -12,7 +12,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,13 +37,12 @@ public class AuthService {
     }
 
     // Registration using DTO
-    public void register(RegisterRequest request) {
-        System.out.println("EMAIL FROM REQUEST = " + request.getEmail());
+    public String register(RegisterRequest request) {
+
         String email = request.getEmail().toLowerCase();
         if (userRepository.findByEmail(email).isPresent()) {
             throw new RuntimeException("Email already registered");
         }
-
 
         Role userRole = roleRepo.findByRoleName(RoleType.ROLE_USER)
                 .orElseThrow(() -> new RuntimeException("ROLE_USER not found"));
@@ -59,6 +57,9 @@ public class AuthService {
         user.addRole(userRole);
 
         userRepository.save(user);
+
+        // Generate JWT
+        return jwtUtil.generateToken(user);
     }
 
     public void makeAdmin(String email) {
@@ -71,7 +72,6 @@ public class AuthService {
         user.addRole(adminRole);
         userRepository.save(user);
     }
-
 
     // Login using AuthenticationManager
     public AuthResponse login(AuthRequest request) {
