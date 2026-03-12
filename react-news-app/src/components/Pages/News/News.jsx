@@ -197,11 +197,10 @@ const News = () => {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const url = `https://gnews.io/api/v4/top-headlines?category=${selectedCategory}&lang=en&country=us&apikey=e594a198a130f391ac23bccfbced3fa8`;
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-        const data = await response.json();
-        const fetchedNews = data.articles || [];
+        const res = await api.get("/news/top", {
+          params: { category: selectedCategory }
+        });
+        const fetchedNews = res.data.articles || [];
 
         fetchedNews.forEach((article) => {
           if (!article.image) article.image = noImg;
