@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect, useContext } from "react";
 import { useNavigate } from "react-router";
 import Swal from "sweetalert2";
-import api from "../../api/axios";
-import { AuthContext } from "../../context/AuthContext";
-import "../../styles/Auth.css";
+import api from "../api/axios";
+import { AuthContext } from "../context/AuthContext";
+import "../styles/Auth.css";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -40,7 +40,7 @@ export default function Login() {
 
     try {
       const response = await api.post("/auth/login", form);
-      const { token, user } = response.data;
+      const { token, user } = response.data.data;
       login(user, token);
       navigate("/news");
     } catch (error) {

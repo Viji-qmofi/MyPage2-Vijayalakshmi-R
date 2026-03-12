@@ -10,7 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -52,6 +52,11 @@ public class BookmarkService {
     public Page<Bookmark> getBookmarks(String email, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("publishedAt").descending());
         return bookmarkRepository.findByUser_Email(email, pageable);
+    }
+
+    // ------------------ Get all bookmarks  ------------------
+    public List<Bookmark> getAllBookmarks(String email) {
+        return bookmarkRepository.findByUser_EmailOrderByPublishedAtDesc(email);
     }
 
     // ------------------ Delete a single bookmark ------------------

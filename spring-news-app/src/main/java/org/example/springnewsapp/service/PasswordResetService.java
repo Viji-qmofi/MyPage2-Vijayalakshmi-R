@@ -7,7 +7,6 @@ import org.example.springnewsapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -36,7 +35,7 @@ public class PasswordResetService {
         String normalizedEmail = email.toLowerCase().trim();
 
         userRepository.findByEmail(normalizedEmail).ifPresent(user -> {
-            tokenRepository.findByUser(user).ifPresent(tokenRepository::delete);
+            tokenRepository.deleteByUser(user);
 
             String token = UUID.randomUUID().toString();
             LocalDateTime expiry = LocalDateTime.now().plusMinutes(15);
@@ -48,8 +47,6 @@ public class PasswordResetService {
             emailService.sendPasswordResetEmail(user.getEmail(), resetLink);
         });
 
-        // Do nothing if email does not exist
-        // This avoids revealing whether an account exists
     }
 
     public void resetPassword(String token, String newPassword) {
@@ -65,6 +62,6 @@ public class PasswordResetService {
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
 
-        tokenRepository.delete(resetToken);
+        tokenRepository.deleteByUser(user);
     }
 }

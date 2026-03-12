@@ -1,7 +1,7 @@
 import { useEffect, useContext } from "react";
 import { useNavigate, useSearchParams } from "react-router";
-import api from "../../api/axios";
-import { AuthContext } from "../../context/AuthContext";
+import api from "../api/axios";
+import { AuthContext } from "../context/AuthContext";
 
 export default function OAuthSuccess() {
   const [searchParams] = useSearchParams();
@@ -25,7 +25,7 @@ export default function OAuthSuccess() {
         },
       })
       .then((userRes) => {
-        login(userRes.data, token);
+        login(userRes.data.data, token);
         navigate("/news");
       })
       .catch(() => {

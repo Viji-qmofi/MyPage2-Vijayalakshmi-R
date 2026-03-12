@@ -1,16 +1,16 @@
 import { Routes, Route } from "react-router";
 import "./App.css";
-import Login from "./components/Pages/Login";
-import Register from "./components/Pages/Register";
-import PrivateRoute from "./components/PrivateRoute";
+import Login from "./auth/Login";
+import Register from "./auth/Register";
 import News from "./components/Pages/News/News";
 import ContactUs from "./components/Pages/Contact/ContactUs";
 import Footer from "./components/Common/Footer";
 import Header from "./components/Common/Header";
 import Profile from "./components/Pages/News/EditProfile";
-import ForgotPassword from "./components/Pages/ForgotPassword";
-import ResetPassword from "./components/Pages/ResetPassword";
-import OAuthSuccess from "./components/Pages/OAuthSuccess";
+import ForgotPassword from "./auth/ForgotPassword";
+import ResetPassword from "./auth/ResetPassword";
+import OAuthSuccess from "./auth/OAuthSuccess";
+import PrivateRoute from "./auth/PrivateRoute";
 
 function App() {
   return (

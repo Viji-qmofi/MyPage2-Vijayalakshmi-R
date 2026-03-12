@@ -79,6 +79,31 @@ public class BookmarkController {
         );
     }
 
+    // -------------------- Get all bookmarks for logged-in user --------------------
+    @GetMapping("/getAll")
+    public ResponseEntity<ApiResponse<List<ArticleDto>>> getAllBookmarks() {
+        String email = SecurityUtil.getCurrentUserEmail();
+        List<Bookmark> bookmarks = bookmarkService.getAllBookmarks(email);
+
+        List<ArticleDto> bookmarkDtos = bookmarks.stream()
+                .map(b -> new ArticleDto(
+                        b.getId(),
+                        b.getTitle(),
+                        b.getDescription(),
+                        b.getContent(),
+                        b.getUrl(),
+                        b.getImage(),
+                        b.getSource(),
+                        b.getPublishedAt(),
+                        b.getUser().getEmail()
+                ))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(
+                new ApiResponse<>("All bookmarks fetched successfully", bookmarkDtos)
+        );
+    }
+
     // ------------------ Delete a single bookmark ------------------
     @Transactional
     @DeleteMapping("/delete")

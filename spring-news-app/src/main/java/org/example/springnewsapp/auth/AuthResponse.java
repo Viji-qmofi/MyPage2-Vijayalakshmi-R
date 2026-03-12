@@ -2,8 +2,6 @@ package org.example.springnewsapp.auth;
 
 import org.example.springnewsapp.dto.UserResponse;
 
-import java.util.Set;
-
 public class AuthResponse {
     private String token;
     private UserResponse user;

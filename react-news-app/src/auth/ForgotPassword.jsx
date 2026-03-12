@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import Swal from "sweetalert2";
-import api from "../../api/axios";
-import "../../styles/Auth.css";
+import api from "../api/axios";
+import "../styles/Auth.css";
 
 export default function ForgotPassword() {
   const navigate = useNavigate();

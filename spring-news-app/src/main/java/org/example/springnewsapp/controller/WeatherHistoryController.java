@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import org.example.springnewsapp.dto.ApiResponse;
 import org.example.springnewsapp.dto.WeatherHistoryResponse;
 import org.example.springnewsapp.model.User;
-import org.example.springnewsapp.model.WeatherSearchHistory;
 import org.example.springnewsapp.repository.UserRepository;
 import org.example.springnewsapp.repository.WeatherSearchHistoryRepository;
 import org.example.springnewsapp.security.util.SecurityUtil;
