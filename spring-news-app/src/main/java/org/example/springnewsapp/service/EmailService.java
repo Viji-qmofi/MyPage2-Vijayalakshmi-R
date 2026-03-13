@@ -18,11 +18,9 @@ public class EmailService {
         message.setTo(toEmail);
         message.setSubject("Reset your password");
         message.setText("Reset link: " + resetLink);
-        System.out.println("RESET LINK: " + resetLink);
+
         try {
             mailSender.send(message);
-            System.out.println("MAIL SKIPPED FOR DEV");
-            System.out.println("MAIL SENT SUCCESSFULLY");
         } catch (Exception ex) {
             ex.printStackTrace();
             throw ex;
