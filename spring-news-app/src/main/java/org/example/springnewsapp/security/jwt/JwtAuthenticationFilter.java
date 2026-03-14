@@ -30,7 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
-        System.out.println("JWT FILTER HIT → " + request.getRequestURI());
+        // System.out.println("JWT FILTER HIT → " + request.getRequestURI());
 
         if (request.getRequestURI().equals("/api/auth/login") ||
                 request.getRequestURI().equals("/api/auth/register")) {
@@ -39,7 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String authHeader = request.getHeader("Authorization");
-        System.out.println("AUTH HEADER = " + authHeader);
+        // System.out.println("AUTH HEADER = " + authHeader);
 
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -67,7 +67,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                     SecurityContextHolder.getContext().setAuthentication(authToken);
 
-                    System.out.println("AUTHENTICATED → " + userDetails.getAuthorities());
                 }
             }
 
