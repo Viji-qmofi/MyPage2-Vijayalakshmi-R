@@ -52,13 +52,13 @@ export default function Login() {
     }
   };
 
-  const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:8080/oauth2/authorization/google";
-  };
+ const handleGoogleLogin = () => {
+  window.location.href = `${import.meta.env.VITE_BACKEND_URL}/oauth2/authorization/google`;
+};
 
-  const handleGithubLogin = () => {
-    window.location.href = "http://localhost:8080/oauth2/authorization/github";
-  };
+const handleGithubLogin = () => {
+  window.location.href = `${import.meta.env.VITE_BACKEND_URL}/oauth2/authorization/github`;
+};
 
   return (
     <div className="profile-container">

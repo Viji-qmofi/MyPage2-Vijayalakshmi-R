@@ -70,8 +70,6 @@ import java.util.stream.Collectors;
 
                     Path filePath = uploadPath.resolve(fileName);
 
-                    System.out.println("Saving profile pic to: " + filePath);
-
                     Files.copy(profilePic.getInputStream(), filePath);
 
                     // Save URL for frontend
