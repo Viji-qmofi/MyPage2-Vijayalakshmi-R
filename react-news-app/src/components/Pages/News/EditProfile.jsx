@@ -21,6 +21,7 @@ export default function EditProfile() {
   // Profile pic state
   const [profilePicFile, setProfilePicFile] = useState(null);
   const [profilePicPreview, setProfilePicPreview] = useState(null);
+  const BACKEND_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
   // Load user data whenever context updates
   useEffect(() => {
@@ -31,9 +32,7 @@ export default function EditProfile() {
         country: user.country || "",
       });
 
-      setProfilePicPreview(
-        user.profilePicUrl ? `http://localhost:8080${user.profilePicUrl}` : null
-      );
+     setProfilePicPreview(user.profilePicUrl || null);
     }
     nameRef.current?.focus();
   }, [user]);

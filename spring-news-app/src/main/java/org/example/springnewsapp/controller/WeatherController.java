@@ -69,17 +69,17 @@ public class WeatherController {
         }
     }
 
-    @PutMapping("/preferred-city")
-    public ResponseEntity<?> updatePreferredCity(@RequestParam String city) {
-
-        String email = SecurityUtil.getCurrentUserEmail();
-
-        userService.updatePreferredCity(email, city);
-
-        return ResponseEntity.ok(Map.of(
-                "message", "Preferred city updated successfully",
-                "city", city
-        ));
-    }
+//    @PutMapping("/preferred-city")
+//    public ResponseEntity<?> updatePreferredCity(@RequestParam String city) {
+//
+//        String email = SecurityUtil.getCurrentUserEmail();
+//
+//        userService.updatePreferredCity(email, city);
+//
+//        return ResponseEntity.ok(Map.of(
+//                "message", "Preferred city updated successfully",
+//                "city", city
+//        ));
+//    }
 
 }
