@@ -25,6 +25,9 @@ export default function EditProfile() {
 
   // Load user data whenever context updates
   useEffect(() => {
+    console.log("USER FROM CONTEXT:", user);
+  console.log("PROFILE PIC URL:", user?.profilePicUrl);
+
     if (user) {
       setForm({
         fullName: user.fullName || "",
