@@ -21,9 +21,13 @@ export default function EditProfile() {
   // Profile pic state
   const [profilePicFile, setProfilePicFile] = useState(null);
   const [profilePicPreview, setProfilePicPreview] = useState(null);
+ // const BACKEND_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
   // Load user data whenever context updates
   useEffect(() => {
+    console.log("USER FROM CONTEXT:", user);
+  console.log("PROFILE PIC URL:", user?.profilePicUrl);
+
     if (user) {
       setForm({
         fullName: user.fullName || "",
@@ -31,9 +35,7 @@ export default function EditProfile() {
         country: user.country || "",
       });
 
-      setProfilePicPreview(
-        user.profilePicUrl ? `http://localhost:8080${user.profilePicUrl}` : null
-      );
+     setProfilePicPreview(user.profilePicUrl || null);
     }
     nameRef.current?.focus();
   }, [user]);
@@ -64,6 +66,9 @@ export default function EditProfile() {
       const res = await api.put("/auth/update-profile", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
+
+      console.log("UPDATE RESPONSE DATA:", res.data.data);
+      console.log("PROFILE PIC FROM RESPONSE:", res.data.data?.profilePicUrl);
 
       // Update context user immediately with new backend data
       login(res.data.data);

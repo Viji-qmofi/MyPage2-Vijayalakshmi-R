@@ -56,10 +56,7 @@ const News = () => {
   const [showBookmarksModal, setShowBookmarksModal] = useState(false);
   const [lastVisitedPage, setLastVisitedPage] = useState("/categories/home");
 
-  const profilePicSrc = user?.profilePicUrl
-    ? `http://localhost:8080${user.profilePicUrl}`
-    : "https://via.placeholder.com/50";
-
+ const profilePicSrc = user?.profilePicUrl || "https://via.placeholder.com/50";
   /* ---------------- Redirect invalid category ---------------- */
   useEffect(() => {
     if (category && !categoryMap[category] && location.pathname !== "/bookmarks") {
