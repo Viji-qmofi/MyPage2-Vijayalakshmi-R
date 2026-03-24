@@ -1,8 +1,7 @@
-<img src="mypage_images/mypage-logo.png" alt="MyPage logo" width="100%" />
 <img src="mypage_images/dashboard.png" alt="Preview of MyPage application" width="100%" />
 
 <div align="center">
-  <h1>MyPage: Full-Stack News, Weather, and Personal Dashboard Application</h1>
+  <h2>MyPage: Full-Stack News, Weather, and Personal Dashboard Application</h2>
   <a href="https://www.launchcode.org">
     <img src="https://img.shields.io/badge/for-LaunchCode_St._Louis-5C93CE?style=for-the-badge" alt="badge linking to LaunchCode's website" />
   </a>
@@ -79,8 +78,6 @@ By default, OAuth users see **Chicago weather** when they first log in. After ed
 
 The front end is built with **React and Vite**, while the back end is powered by **Spring Boot, Spring Security, Hibernate, and MySQL**. The application also integrates external APIs for news and weather, stores profile images in **Amazon S3**, and is deployed with **Netlify**, **AWS Elastic Beanstalk**, and **Amazon RDS**.
 
-> **MyPage – The daily source of wisdom.**
-
 This project was developed as my **LaunchCode Unit 2 full-stack capstone project** and reflects my interest in building secure, user-focused applications with real-world API integrations and cloud deployment.
 
 ---
@@ -132,32 +129,29 @@ This project was developed as my **LaunchCode Unit 2 full-stack capstone project
 <a name="visuals"></a>
 ## 📸 Key Visuals
 
-### Wireframes / ERD
+### Wireframes
 
 <details>
   <summary>Click here to toggle diagrams.</summary><br />
-  <em>Add your wireframes, ERD, or dbdiagram screenshots here.</em>
+  <em>Click on image to view in Figma.</em>
+  <a href="https://www.figma.com/design/Tlv5azmgUYGNpkvTsIw8N0/My-Page---unit-2---The-source-of-wisdom?node-id=0-1&t=ORERwAiUDJ4jMUNf-1"><img src="mypage_images/wireframe.png" alt="Wireframe Diagram" /></a>
 </details>
+
+### Preview of UI
 
 ### Responsive Design Preview
 
-> Include screenshots that show the application on desktop, iPad, and mobile layouts.
-
-<details open>
-  <summary>Responsive Views</summary>
+<details>
+  <summary>Responsive Views for desktop, iPad, and mobile layouts.</summary>
   <img src="mypage_images/dashboard.png" alt="Screenshot of MyPage desktop view" width="700px" />
   <img src="mypage_images/ipad_mini.png" alt="Screenshot of MyPage iPad view" width="500px" />
   <img src="mypage_images/mobile.png" alt="Screenshot of MyPage mobile view" height="500px" />
 </details>
 
-### Preview of UI
-
-> Click any section below to expand or collapse it.
-
 #### AUTHENTICATION
 
-<details open>
-  <summary>Login, Register, and OAuth</summary>
+<details>
+  <summary>Login, Register,OAuth and Password Reset</summary>
   <img src="mypage_images/login_page.png" alt="Screenshot of login page" height="500px" />
   <img src="mypage_images/user_registration.png" alt="Screenshot of register page" height="500px" />
   <img src="mypage_images/google_oauth.png" alt="Screenshot of google login page" height="500px" />
@@ -272,26 +266,64 @@ This project uses a modern full-stack architecture with a React front end, a Spr
 
 #### 3. Configure backend environment variables
 
-    DB_URL=jdbc:mysql://localhost:3306/mypage_db
-    DB_USERNAME=your_mysql_username
-    DB_PASSWORD=your_mysql_password
+   spring.application.name=spring-news-app
+   
+#### DATABASE CONFIG
+spring.datasource.url=${DB_URL}
+spring.datasource.username=${DB_USERNAME}
+spring.datasource.password=${DB_PASSWORD}
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+server.port=5000
 
-    JWT_SECRET=your_jwt_secret
-    JWT_EXPIRATION=86400000
 
-    GNEWS_API_KEY=your_gnews_api_key
-    WEATHER_API_KEY=your_openweather_api_key
+#### JWT CONFIG
+jwt.secret=${JWT_SECRET}
+jwt.expiration=86400000
 
-    APP_FRONTEND_URL=http://localhost:5173
+logging.level.org.springframework.security=DEBUG
 
-    GOOGLE_CLIENT_ID=your_google_client_id
-    GOOGLE_CLIENT_SECRET=your_google_client_secret
+#### News and Weather API key
+gnews.api.key=${GNEWS_API_KEY}  # set in environment variable
+gnews.api.url=https://gnews.io/api/v4
 
-    GITHUB_CLIENT_ID=your_github_client_id
-    GITHUB_CLIENT_SECRET=your_github_client_secret
+weather.api.key=${WEATHER_KEY}
 
-    AWS_S3_BUCKET_NAME=your_bucket_name
-    AWS_REGION=your_region
+file.upload-dir=uploads
+
+#### Gmail App setup
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=vijiramu@gmail.com
+spring.mail.password=${GMAIL_APP_PASSWORD}
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+app.frontend.url=https://mypagefullstack.netlify.app
+
+#### Google OAuth
+spring.security.oauth2.client.registration.google.client-id=${GOOGLE_CLIENT_ID}
+spring.security.oauth2.client.registration.google.client-secret=${GOOGLE_CLIENT_SECRET}
+spring.security.oauth2.client.registration.google.scope=openid,profile,email
+
+#### GitHub OAuth
+spring.security.oauth2.client.registration.github.client-id=${GITHUB_CLIENT_ID}
+spring.security.oauth2.client.registration.github.client-secret=${GITHUB_CLIENT_SECRET}
+spring.security.oauth2.client.registration.github.scope=read:user,user:email
+
+#### Profile image file storage
+aws.s3.bucket-name=${AWS_S3_BUCKET_NAME}
+aws.region=${AWS_REGION}
+
+#### Fix OAuth redirect URI behind proxy
+server.forward-headers-strategy=framework
+
+#### Google OAuth callback
+spring.security.oauth2.client.registration.google.redirect-uri=https://api.mypagebackend.com/login/oauth2/code/{registrationId}
+
+#### GitHub OAuth callback
+spring.security.oauth2.client.registration.github.redirect-uri=https://api.mypagebackend.com/login/oauth2/code/{registrationId}
+
+
 
 #### 4. Run the backend
 
@@ -314,7 +346,7 @@ This project uses a modern full-stack architecture with a React front end, a Spr
    ---
 
 <a name="database"></a>
-## 🗄️ Database Structure (ERD)
+## 🗄️ Database Structure
 
 This project uses a **MySQL relational database** designed to support authentication, personalization, and user-driven features such as bookmarks and weather history.
 
@@ -333,12 +365,13 @@ This project uses a **MySQL relational database** designed to support authentica
 3. **User ↔ WeatherSearchHistory**: One-to-Many  
 4. **User ↔ PasswordResetToken**: One-to-One (or One-to-Many depending on lifecycle)
 
+
 ### Entity Relationship Diagram (ERD)
 
-<details open>
+<details>
   <summary>Click here to toggle view of ERD</summary><br />
-  <em>Add your ERD screenshot here.</em><br />
-  <img src="mypage_images/erd.png" alt="Entity Relationship Diagram" />
+  <em>>Click on image to view ERD in dbdiagram.io</em><br />
+  <a href="https://dbdiagram.io/d/MyPageERD-69af432e77d079431b41100e"><img src="mypage_images/ERD.png" alt="Entity Relationship Diagram" /></a>
 </details>
 
 ---
@@ -430,9 +463,4 @@ Several enhancements are planned to extend functionality and improve user experi
 
 ## 🧑‍💻 Author
 
-**Vijayalakshmi Ramu**  
-LaunchCode Full-Stack Developer Student  
-
-- GitHub: [your-github-link](https://github.com/)  
-- LinkedIn: [your-linkedin-link](https://www.linkedin.com/)  
-- Live App: [MyPage](https://mypagefullstack.netlify.app)
+**Vijayalakshmi Ramu** - [@ GitHub](https://github.com/viji-qmofi) - [LinkedIn](https://www.linkedin.com/in/vijiramu)
