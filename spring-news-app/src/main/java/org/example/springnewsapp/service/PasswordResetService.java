@@ -43,7 +43,12 @@ public class PasswordResetService {
             PasswordResetToken resetToken = new PasswordResetToken(token, user, expiry);
             tokenRepository.save(resetToken);
 
-            String resetLink = frontendUrl + "/reset-password?token=" + token;
+            String baseUrl = frontendUrl.endsWith("/")
+                    ? frontendUrl.substring(0, frontendUrl.length() - 1)
+                    : frontendUrl;
+
+            String resetLink = baseUrl + "/reset-password?token=" + token;
+
             emailService.sendPasswordResetEmail(user.getEmail(), resetLink);
         });
 
