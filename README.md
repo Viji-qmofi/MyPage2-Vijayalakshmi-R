@@ -105,6 +105,7 @@ This project was developed as my **LaunchCode Unit 2 full-stack capstone project
 - **Preferred City Support:** Users can update their profile and save a city as their default weather location
 - **Weather Search:** Users can search weather for cities
 - **Weather History:** Recent weather searches are saved for authenticated users
+- **Weather History Management:** Users can delete individual weather history entries or clear all saved weather history
 
 ### Profile Features
 - **Profile Editing:** Users can update profile details
@@ -392,6 +393,7 @@ The following RESTful endpoints manage authentication, news, weather, and user-s
 | 🟡 `POST` | `/api/auth/register` | Register a new user | 🌎 Public |
 | 🟡 `POST` | `/api/auth/login` | Authenticate user and return JWT | 🌎 Public |
 | 🟢 `GET` | `/api/auth/oauth-user` | Get authenticated OAuth user details | 🔐 Authenticated |
+| 🟡 `PUT` | `/api/auth/update-profile` | Update user profile details (name, city, profile picture, etc.) | 🔐 Authenticated |
 
 ### 🔑 Password Reset
 
@@ -417,6 +419,8 @@ The following RESTful endpoints manage authentication, news, weather, and user-s
 | 🟢 `GET` | `/api/weather` | Get weather for a searched city | 🔐 Authenticated |
 | 🟢 `GET` | `/api/weather/me` | Get weather for user's preferred city | 🔐 Authenticated |
 | 🟢 `GET` | `/api/weather/history` | Retrieve weather search history | 🔐 Authenticated |
+| 🔴 `DELETE` | `/api/weather/history/{id}` | Delete a weather history record by ID | 🔐 Authenticated |
+| 🔴 `DELETE` | `/api/weather/history` | Delete all weather history for the current user | 🔐 Authenticated |
 
 ---
 
