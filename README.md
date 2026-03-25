@@ -50,6 +50,7 @@
   <img src="https://img.shields.io/badge/OAuth2-EB5424?style=for-the-badge&logo=oauth&logoColor=white" alt="OAuth2" />
   <img src="https://img.shields.io/badge/Google_Login-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Google Login" />
   <img src="https://img.shields.io/badge/GitHub_Login-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Login" />
+  <img src="https://img.shields.io/badge/Password_Reset-green?style=for-the-badge" alt="Password Reset" />
 </div>
 
 ---
@@ -219,6 +220,7 @@ This project uses a modern full-stack architecture with a React front end, a Spr
 | ![Spring Security](https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white) | Handles authentication, authorization, and protected routes |
 | ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white) | Token-based authentication for secure user sessions |
 | ![OAuth2](https://img.shields.io/badge/OAuth2-EB5424?style=for-the-badge&logo=oauth&logoColor=white) | Enables Google and GitHub login integration |
+| ![Password Reset](https://img.shields.io/badge/Password_Reset-4CAF50?style=for-the-badge) | Token-based password reset with email service integration and secure validation |
 | ![Hibernate](https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&logo=hibernate&logoColor=white) | ORM for interacting with the relational database |
 | ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white) | Relational database used for users, bookmarks, roles, and weather history |
 | ![Maven](https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white) | Dependency management and build tool |
